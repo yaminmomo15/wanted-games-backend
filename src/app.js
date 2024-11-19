@@ -4,15 +4,20 @@ import contentRoutes from './routes/contentRoutes.js';
 
 const app = express();
 
-// Middleware
+// Configure middleware for parsing JSON and URL-encoded bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// Register route handlers
+// Admin routes handle authentication and admin-related operations
 app.use('/api/admin', adminRoutes);
+// Content routes handle CRUD operations for content management
 app.use('/api/content', contentRoutes);
 
-// Error handling middleware
+/**
+ * Global error handling middleware
+ * Catches all unhandled errors and returns a 500 response
+ */
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });

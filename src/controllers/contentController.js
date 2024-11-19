@@ -1,5 +1,13 @@
 import { createContentModel, getAllContentModel, getByIdContentModel, updateContentModel, deleteContentModel } from '../models/contentModel.js';
 
+/**
+ * Creates a new content entry
+ * Requires authentication
+ * 
+ * @param {Object} req - Express request object with title and body in request body
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with success message or error
+ */
 const createContentController = async (req, res) => {
     try {
         const { title, body } = req.body;
@@ -16,6 +24,14 @@ const createContentController = async (req, res) => {
     }
 };
 
+/**
+ * Retrieves all content entries
+ * Requires authentication
+ * 
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with all content entries or error
+ */
 const getAllContentController = async (req, res) => {
     try {
         const contents = await getAllContentModel();
@@ -25,6 +41,14 @@ const getAllContentController = async (req, res) => {
     }
 };
 
+/**
+ * Retrieves a single content entry
+ * Requires authentication
+ * 
+ * @param {Object} req - Express request object with content ID in params
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with the content entry or error
+ */
 const getOneContentController = async (req, res) => {
     try {
         const content = await getByIdContentModel(req.params.id);
@@ -37,6 +61,14 @@ const getOneContentController = async (req, res) => {
     }
 };
 
+/**
+ * Updates an existing content entry
+ * Requires authentication
+ * 
+ * @param {Object} req - Express request object with title and body in request body
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with success message or error
+ */
 const updateContentController = async (req, res) => {
     try {
         const { title, body } = req.body;
@@ -58,6 +90,14 @@ const updateContentController = async (req, res) => {
     }
 };
 
+/**
+ * Deletes a content entry
+ * Requires authentication
+ * 
+ * @param {Object} req - Express request object with content ID in params
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with success message or error
+ */
 const deleteContentController = async (req, res) => {
     try {
         const content = await getByIdContentModel(req.params.id);

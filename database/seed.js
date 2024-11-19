@@ -13,6 +13,10 @@ const __dirname = path.dirname(__filename);
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'website.db');
 const schemaPath = path.join(__dirname, 'schema.sql');
 
+/**
+ * Database initialization and seeding function
+ * Creates tables and populates with initial data
+ */
 async function initializeDatabase() {
     // Create a new database connection
     const db = new sqlite3.Database(dbPath, async (err) => {
@@ -24,10 +28,10 @@ async function initializeDatabase() {
     });
 
     try {
-        // Read and execute schema
+        // Read schema file and execute SQL statements
         const schema = fs.readFileSync(schemaPath, 'utf8');
         
-        // Promisify db.run
+        // Promisify database operations
         const runAsync = (sql) => new Promise((resolve, reject) => {
             db.run(sql, (err) => {
                 if (err) reject(err);
@@ -35,20 +39,20 @@ async function initializeDatabase() {
             });
         });
 
-        // Execute schema
+        // Execute each schema statement
         const statements = schema.split(';').filter(stmt => stmt.trim());
         for (let statement of statements) {
             await runAsync(statement);
         }
 
-        // Create sample admin
+        // Create default admin account
         const hashedPassword = await bcrypt.hash('admin123', 10);
         await runAsync(`
             INSERT OR IGNORE INTO admins (username, password)
             VALUES ('admin', '${hashedPassword}')
         `);
 
-        // Create sample content
+        // Insert sample content
         const sampleContents = [
             {
                 title: 'Welcome to Our Website',
