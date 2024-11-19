@@ -1,6 +1,6 @@
-const express = require('express');
-const adminRoutes = require('./routes/adminRoutes');
-const contentRoutes = require('./routes/contentRoutes');
+import express from 'express';
+import adminRoutes from './routes/adminRoutes.js';
+import contentRoutes from './routes/contentRoutes.js';
 
 const app = express();
 
@@ -18,4 +18,4 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong!' });
 });
 
-module.exports = app; 
+export default app; 

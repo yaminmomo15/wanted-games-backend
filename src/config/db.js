@@ -1,6 +1,12 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-require('dotenv').config();
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dbPath = process.env.DB_PATH || path.join(__dirname, '../../database/website.db');
 
@@ -13,22 +19,22 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 // Promisify db.run and db.all for easier async/await usage
-db.runAsync = function (sql, params) {
+db.runAsync = (sql, params) => {
     return new Promise((resolve, reject) => {
-        this.run(sql, params, function (err) {
+        db.run(sql, params, function(err) {
             if (err) reject(err);
             else resolve(this);
         });
     });
 };
 
-db.allAsync = function (sql, params) {
+db.allAsync = (sql, params) => {
     return new Promise((resolve, reject) => {
-        this.all(sql, params, (err, rows) => {
+        db.all(sql, params, (err, rows) => {
             if (err) reject(err);
             else resolve(rows);
         });
     });
 };
 
-module.exports = db; 
+export default db; 

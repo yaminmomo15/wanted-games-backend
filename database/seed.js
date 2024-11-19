@@ -1,8 +1,14 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const bcrypt = require('bcryptjs');
-const fs = require('fs');
-require('dotenv').config();
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'website.db');
 const schemaPath = path.join(__dirname, 'schema.sql');

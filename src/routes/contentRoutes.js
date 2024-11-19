@@ -1,15 +1,16 @@
-const express = require('express');
-const ContentController = require('../controllers/contentController');
-const { authenticateToken } = require('../middleware/authMiddleware');
+import express from 'express';
+import { createContentController, getAllContentController, getOneContentController, updateContentController, deleteContentController } from '../controllers/contentController.js';
+import { authenticateToken } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
 // Public routes
-router.get('/', ContentController.getAll);
-router.get('/:id', ContentController.getOne);
+router.get('/', getAllContentController);
+router.get('/:id', getOneContentController);
 
 // Protected routes (require authentication)
-router.post('/', authenticateToken, ContentController.create);
-router.put('/:id', authenticateToken, ContentController.update);
-router.delete('/:id', authenticateToken, ContentController.delete);
+router.post('/', authenticateToken, createContentController);
+router.put('/:id', authenticateToken, updateContentController);
+router.delete('/:id', authenticateToken, deleteContentController);
 
-module.exports = router; 
+export default router; 
