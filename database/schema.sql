@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS contents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,                -- Content title
     body TEXT NOT NULL,                 -- Main content body
+    image BLOB,                         -- Image data stored as BLOB
+    image_type TEXT,                    -- Image MIME type (e.g., 'image/jpeg', 'image/png')
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     created_by INTEGER,                 -- References admin who created the content

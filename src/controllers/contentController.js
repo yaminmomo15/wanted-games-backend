@@ -12,12 +12,20 @@ const createContentController = async (req, res) => {
     try {
         const { title, body } = req.body;
         const adminId = req.admin.id;
-
+        
         if (!title || !body) {
             return res.status(400).json({ error: 'Title and body are required' });
         }
 
-        await createContentModel(title, body, adminId);
+        let image = null;
+        let imageType = null;
+        
+        if (req.file) {
+            image = req.file.buffer;
+            imageType = req.file.mimetype;
+        }
+
+        await createContentModel(title, body, adminId, image, imageType);
         res.status(201).json({ message: 'Content created successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -35,7 +43,21 @@ const createContentController = async (req, res) => {
 const getAllContentController = async (req, res) => {
     try {
         const contents = await getAllContentModel();
-        res.json(contents);
+        
+        // Convert image buffers to data URLs
+        const contentsWithImages = contents.map(content => {
+            if (content.image) {
+                // Convert Buffer to base64 and create a data URL
+                const base64Image = content.image.toString('base64');
+                return {
+                    ...content,
+                    // Replace binary buffer with data URL for frontend use
+                    image: `data:${content.image_type};base64,${base64Image}`
+                };
+            }
+            return content;
+        });
+        res.json(contentsWithImages);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

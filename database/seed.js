@@ -1,9 +1,10 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import bcrypt from 'bcryptjs';
-import fs from 'fs';
+import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -28,7 +29,7 @@ async function initializeDatabase() {
     });
 
     try {
-        // Read schema file and execute SQL statements
+        // Synchronous read for schema
         const schema = fs.readFileSync(schemaPath, 'utf8');
         
         // Promisify database operations
@@ -52,11 +53,17 @@ async function initializeDatabase() {
             VALUES ('admin', '${hashedPassword}')
         `);
 
-        // Insert sample content
+        // Async read for image
+        const imagePath = path.join(__dirname, 'fixtures/images/sample1.jpg');
+        const imageBuffer = await readFile(imagePath);
+        
+        // Insert sample content with image
         const sampleContents = [
             {
                 title: 'Welcome to Our Website',
                 body: 'This is our first article. We hope you enjoy your stay!',
+                image: imageBuffer,
+                imageType: 'image/jpeg'
             },
             {
                 title: 'Getting Started Guide',
@@ -66,13 +73,15 @@ async function initializeDatabase() {
 
         for (let content of sampleContents) {
             await runAsync(`
-                INSERT INTO contents (title, body, created_by)
+                INSERT INTO contents (title, body, created_by, image, image_type)
                 VALUES (
                     '${content.title}',
                     '${content.body}',
-                    (SELECT id FROM admins WHERE username = 'admin')
+                    (SELECT id FROM admins WHERE username = 'admin'),
+                    ?,
+                    '${content.imageType || null}'
                 )
-            `);
+            `, content.image || null);
         }
 
         console.log('Database seeded successfully!');
