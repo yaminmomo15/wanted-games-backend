@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS contact (
 );
 
 -- Contact images table
-CREATE TABLE IF NOT EXISTS contact_img (
+CREATE TABLE IF NOT EXISTS contact_image (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'map', 'building')
     image BLOB NOT NULL                 -- Contact-related image data

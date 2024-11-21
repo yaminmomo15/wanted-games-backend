@@ -74,7 +74,7 @@ async function initializeDatabase() {
                 { label: 'email', description: 'contact@example.com' },
                 { label: 'phone', description: '+1234567890' }
             ],
-            contact_img: [
+            contact_image: [
                 { label: 'map', image: imageBuffer },
                 { label: 'building', image: imageBuffer }
             ]
