@@ -1,13 +1,16 @@
 import express from 'express';
-import { login, profile } from '../controllers/admin.js';
+import { 
+    create, 
+    getByUsername 
+} from '../controllers/admin.js';
 import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Public routes
-router.post('/login', login);
+router.post('/login', create);  // create session/token
 
 // Protected routes
-router.get('/profile', authenticateToken, profile);
+router.get('/profile', authenticateToken, getByUsername);
 
 export default router; 

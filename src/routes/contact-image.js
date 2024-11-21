@@ -1,7 +1,7 @@
 import express from 'express';
 import { 
-    getAllImages, 
-    getImageByLabel, 
+    listAll, 
+    getByLabel, 
     create, 
     update, 
     remove 
@@ -12,8 +12,8 @@ import upload from '../middleware/upload.js';
 const router = express.Router();
 
 // Public routes - anyone can view contact images
-router.get('/', getAllImages);
-router.get('/:label', getImageByLabel);
+router.get('/', listAll);
+router.get('/:label', getByLabel);
 
 // Protected routes - only authenticated admins can modify
 router.post('/', 

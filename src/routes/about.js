@@ -1,7 +1,7 @@
 import express from 'express';
 import { 
-    getAllAbout, 
-    getAboutByLabel, 
+    listAll, 
+    getByLabel, 
     create, 
     update, 
     remove 
@@ -11,8 +11,8 @@ import { authenticateToken } from '../middleware/auth.js';
 const router = express.Router();
 
 // Public routes - anyone can view about content
-router.get('/', getAllAbout);
-router.get('/:label', getAboutByLabel);
+router.get('/', listAll);
+router.get('/:label', getByLabel);
 
 // Protected routes - only authenticated admins can modify
 router.post('/', authenticateToken, create);

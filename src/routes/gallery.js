@@ -1,6 +1,6 @@
 import express from 'express';
 import { 
-    getAll, 
+    listAll, 
     getByLabel, 
     create, 
     update, 
@@ -12,7 +12,7 @@ import upload from '../middleware/upload.js';
 const router = express.Router();
 
 // Public routes - anyone can view gallery images
-router.get('/', getAll);
+router.get('/', listAll);
 router.get('/:label', getByLabel);
 
 // Protected routes - only authenticated admins can modify

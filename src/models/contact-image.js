@@ -1,17 +1,17 @@
 import db from '../config/db.js';
 
-const createContactImg = async (label, image) => {
+const insert = async (label, image) => {
     return await db.runAsync(
         'INSERT INTO contact_image (label, image) VALUES (?, ?)',
         [label, image]
     );
 };
 
-const getAllContactImg = async () => {
+const findAll = async () => {
     return await db.allAsync('SELECT * FROM contact_image');
 };
 
-const getByLabelContactImg = async (label) => {
+const findByLabel = async (label) => {
     const result = await db.allAsync(
         'SELECT * FROM contact_image WHERE label = ?',
         [label]
@@ -19,21 +19,15 @@ const getByLabelContactImg = async (label) => {
     return result[0];
 };
 
-const updateContactImg = async (label, image) => {
+const modify = async (label, image) => {
     return await db.runAsync(
         'UPDATE contact_image SET image = ? WHERE label = ?',
         [image, label]
     );
 };
 
-const deleteContactImg = async (label) => {
+const destroy = async (label) => {
     return await db.runAsync('DELETE FROM contact_image WHERE label = ?', [label]);
 };
 
-export {
-    createContactImg,
-    getAllContactImg,
-    getByLabelContactImg,
-    updateContactImg,
-    deleteContactImg
-}; 
+export { insert, findAll, findByLabel, modify, destroy }; 

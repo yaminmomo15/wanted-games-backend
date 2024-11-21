@@ -1,24 +1,24 @@
 import {
-    createContact,
-    getAllContact,
-    getByLabelContact,
-    updateContact,
-    deleteContact
+    insert,
+    findAll,
+    findByLabel,
+    modify,
+    destroy
 } from '../models/contact.js';
 
-export const getAll = async (req, res) => {
+const listAll = async (req, res) => {
     try {
-        const contacts = await getAllContact();
+        const contacts = await findAll();
         res.json(contacts);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-export const getByLabel = async (req, res) => {
+const getByLabel = async (req, res) => {
     try {
         const { label } = req.params;
-        const contact = await getByLabelContact(label);
+        const contact = await findByLabel(label);
         
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
@@ -30,7 +30,7 @@ export const getByLabel = async (req, res) => {
     }
 };
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     try {
         const { label, description } = req.body;
         
@@ -38,7 +38,7 @@ export const create = async (req, res) => {
             return res.status(400).json({ error: 'Label and description are required' });
         }
 
-        await createContact(label, description);
+        await insert(label, description);
         res.status(201).json({ message: 'Contact created successfully' });
     } catch (error) {
         if (error.message.includes('UNIQUE constraint failed')) {
@@ -48,7 +48,7 @@ export const create = async (req, res) => {
     }
 };
 
-export const update = async (req, res) => {
+const update = async (req, res) => {
     try {
         const { label } = req.params;
         const { description } = req.body;
@@ -57,30 +57,38 @@ export const update = async (req, res) => {
             return res.status(400).json({ error: 'Description is required' });
         }
 
-        const contact = await getByLabelContact(label);
+        const contact = await findByLabel(label);
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        await updateContact(label, description);
+        await modify(label, description);
         res.json({ message: 'Contact updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-export const remove = async (req, res) => {
+const remove = async (req, res) => {
     try {
         const { label } = req.params;
         
-        const contact = await getByLabelContact(label);
+        const contact = await findByLabel(label);
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        await deleteContact(label);
+        await destroy(label);
         res.json({ message: 'Contact deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+};
+
+export { 
+    listAll,
+    getByLabel,
+    create,
+    update,
+    remove 
 };

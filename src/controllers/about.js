@@ -1,24 +1,24 @@
 import {
-    createAbout,
-    getAll,
-    getByLabel,
-    updateAbout,
-    deleteAbout
+    insert,
+    findAll,
+    findByLabel,
+    modify,
+    destroy
 } from '../models/about.js';
 
-export const getAllAbout = async (req, res) => {
+const listAll = async (req, res) => {
     try {
-        const items = await getAll();
+        const items = await findAll();
         res.json(items);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-export const getAboutByLabel = async (req, res) => {
+const getByLabel     = async (req, res) => {
     try {
         const { label } = req.params;
-        const item = await getByLabel(label);
+        const item = await findByLabel(label);
         
         if (!item) {
             return res.status(404).json({ error: 'About item not found' });
@@ -30,7 +30,7 @@ export const getAboutByLabel = async (req, res) => {
     }
 };
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     try {
         const { label, description } = req.body;
         
@@ -40,7 +40,7 @@ export const create = async (req, res) => {
             });
         }
 
-        await createAbout(label, description);
+        await insert(label, description);
         res.status(201).json({ 
             message: 'About item created successfully' 
         });
@@ -54,7 +54,7 @@ export const create = async (req, res) => {
     }
 };
 
-export const update = async (req, res) => {
+const update = async (req, res) => {
     try {
         const { label } = req.params;
         const { description } = req.body;
@@ -65,14 +65,14 @@ export const update = async (req, res) => {
             });
         }
 
-        const item = await getByLabel(label);
+        const item = await findByLabel(label);
         if (!item) {
             return res.status(404).json({ 
                 error: 'About item not found' 
             });
         }
 
-        await updateAbout(label, description);
+        await modify(label, description);
         res.json({ 
             message: 'About item updated successfully' 
         });
@@ -81,22 +81,30 @@ export const update = async (req, res) => {
     }
 };
 
-export const remove = async (req, res) => {
+const remove = async (req, res) => {
     try {
         const { label } = req.params;
         
-        const item = await getByLabel(label);
+        const item = await findByLabel(label);
         if (!item) {
             return res.status(404).json({ 
                 error: 'About item not found' 
             });
         }
 
-        await deleteAbout(label);
+        await destroy(label);
         res.json({ 
             message: 'About item deleted successfully' 
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+};
+
+export { 
+    listAll,
+    getByLabel,
+    create,
+    update,
+    remove 
 };

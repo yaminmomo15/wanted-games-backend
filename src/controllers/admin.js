@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { findByUsername, validatePassword } from '../models/admin.js';
+import { findByUsername, validate } from '../models/admin.js';
 
-export const login = async (req, res) => {
+const create = async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -21,7 +21,7 @@ export const login = async (req, res) => {
         }
 
         // Validate password
-        const validPassword = await validatePassword(password, admin.password);
+        const validPassword = await validate(password, admin.password);
         if (!validPassword) {
             return res.status(401).json({ 
                 error: 'Invalid username or password' 
@@ -54,7 +54,7 @@ export const login = async (req, res) => {
     }
 };
 
-export const profile = async (req, res) => {
+const getByUsername = async (req, res) => {
     try {
         // req.admin is set by the authenticateToken middleware
         const admin = await findByUsername(req.admin.username);
@@ -76,3 +76,5 @@ export const profile = async (req, res) => {
         });
     }
 }; 
+
+export { create, getByUsername };

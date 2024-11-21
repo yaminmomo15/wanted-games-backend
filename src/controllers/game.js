@@ -1,14 +1,14 @@
 import {
-    createGames,
-    getAllGames,
-    getByLabelGames,
-    updateGames,
-    deleteGames
+    insert,
+    findAll,
+    findByLabel,
+    modify,
+    destroy
 } from '../models/game.js';
 
-export const getAll = async (req, res) => {
+const listAll = async (req, res) => {
     try {
-        const games = await getAllGames();
+        const games = await findAll();
         const processedGames = games.map(game => ({
             ...game,
             image_main: game.image_main.toString('base64'),
@@ -22,10 +22,10 @@ export const getAll = async (req, res) => {
     }
 };
 
-export const getByLabel = async (req, res) => {
+const getByLabel = async (req, res) => {
     try {
         const { label } = req.params;
-        const game = await getByLabelGames(label);
+        const game = await findByLabel(label);
         
         if (!game) {
             return res.status(404).json({ 
@@ -45,7 +45,7 @@ export const getByLabel = async (req, res) => {
     }
 };
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     try {
         const { label, name, description } = req.body;
         const files = req.files;
@@ -63,7 +63,7 @@ export const create = async (req, res) => {
             });
         }
 
-        await createGames({
+        await insert({
             label,
             name,
             description,
@@ -86,7 +86,7 @@ export const create = async (req, res) => {
     }
 };
 
-export const update = async (req, res) => {
+const update = async (req, res) => {
     try {
         const { label } = req.params;
         const { name, description } = req.body;
@@ -99,14 +99,14 @@ export const update = async (req, res) => {
             });
         }
 
-        const game = await getByLabelGames(label);
+        const game = await findByLabel(label);
         if (!game) {
             return res.status(404).json({ 
                 error: 'Game not found' 
             });
         }
 
-        await updateGames({
+        await modify({
             label,
             name,
             description,
@@ -124,22 +124,30 @@ export const update = async (req, res) => {
     }
 };
 
-export const remove = async (req, res) => {
+const remove = async (req, res) => {
     try {
         const { label } = req.params;
         
-        const game = await getByLabelGames(label);
+        const game = await findByLabel(label);
         if (!game) {
             return res.status(404).json({ 
                 error: 'Game not found' 
             });
         }
 
-        await deleteGames(label);
+        await destroy(label);
         res.json({ 
             message: 'Game deleted successfully' 
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+};
+
+export { 
+    listAll,
+    getByLabel,
+    create,
+    update,
+    remove 
 };

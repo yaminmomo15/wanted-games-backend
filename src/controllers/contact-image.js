@@ -1,14 +1,14 @@
 import {
-    createContactImg,
-    getAllContactImg,
-    getByLabelContactImg,
-    updateContactImg,
-    deleteContactImg
+    insert,
+    findAll,
+    findByLabel,
+    modify,
+    destroy
 } from '../models/contact-image.js';
 
-export const getAllImages = async (req, res) => {
+const listAll = async (req, res) => {
     try {
-        const items = await getAllContactImg();
+        const items = await findAll();
         const processedItems = items.map(item => ({
             ...item,
             image: item.image.toString('base64')
@@ -19,10 +19,10 @@ export const getAllImages = async (req, res) => {
     }
 };
 
-export const getImageByLabel = async (req, res) => {
+const getByLabel = async (req, res) => {
     try {
         const { label } = req.params;
-        const item = await getByLabelContactImg(label);
+        const item = await findByLabel(label);
         
         if (!item) {
             return res.status(404).json({ 
@@ -39,7 +39,7 @@ export const getImageByLabel = async (req, res) => {
     }
 };
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     try {
         const { label } = req.body;
         const image = req.file?.buffer;
@@ -50,7 +50,7 @@ export const create = async (req, res) => {
             });
         }
 
-        await createContactImg(label, image);
+        await insert(label, image);
         res.status(201).json({ 
             message: 'Contact image created successfully' 
         });
@@ -64,7 +64,7 @@ export const create = async (req, res) => {
     }
 };
 
-export const update = async (req, res) => {
+const update = async (req, res) => {
     try {
         const { label } = req.params;
         const image = req.file?.buffer;
@@ -75,14 +75,14 @@ export const update = async (req, res) => {
             });
         }
 
-        const item = await getByLabelContactImg(label);
+        const item = await findByLabel(label);
         if (!item) {
             return res.status(404).json({ 
                 error: 'Contact image not found' 
             });
         }
 
-        await updateContactImg(label, image);
+        await modify(label, image);
         res.json({ 
             message: 'Contact image updated successfully' 
         });
@@ -91,22 +91,30 @@ export const update = async (req, res) => {
     }
 };
 
-export const remove = async (req, res) => {
+const remove = async (req, res) => {
     try {
         const { label } = req.params;
         
-        const item = await getByLabelContactImg(label);
+        const item = await findByLabel(label);
         if (!item) {
             return res.status(404).json({ 
                 error: 'Contact image not found' 
             });
         }
 
-        await deleteContactImg(label);
+        await destroy(label);
         res.json({ 
             message: 'Contact image deleted successfully' 
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+};
+
+export { 
+    listAll,
+    getByLabel,
+    create,
+    update,
+    remove 
 };
