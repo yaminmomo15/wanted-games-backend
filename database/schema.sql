@@ -7,16 +7,42 @@ CREATE TABLE IF NOT EXISTS admins (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Content table
--- Stores all content entries with metadata
-CREATE TABLE IF NOT EXISTS contents (
+-- About Us table
+CREATE TABLE IF NOT EXISTS about_us (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,                -- Content title
-    body TEXT NOT NULL,                 -- Main content body
-    image BLOB,                         -- Image data stored as BLOB
-    image_type TEXT,                    -- Image MIME type (e.g., 'image/jpeg', 'image/png')
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    created_by INTEGER,                 -- References admin who created the content
-    FOREIGN KEY (created_by) REFERENCES admins(id)
-); 
+    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'mission', 'history')
+    description TEXT NOT NULL
+);
+
+-- Gallery table
+CREATE TABLE IF NOT EXISTS gallery (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'team_photo', 'office')
+    image BLOB NOT NULL                 -- Image data stored as BLOB
+);
+
+-- Games table
+CREATE TABLE IF NOT EXISTS games (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'racing_game', 'puzzle_game')
+    name TEXT NOT NULL,                 -- Game name
+    description TEXT NOT NULL,          -- Game description
+    image_main BLOB NOT NULL,           -- Main game image
+    image_1 BLOB,                       -- Additional game image 1
+    image_2 BLOB,                       -- Additional game image 2
+    image_3 BLOB                        -- Additional game image 3
+);
+
+-- Contact table
+CREATE TABLE IF NOT EXISTS contact (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'email', 'phone', 'address')
+    description TEXT NOT NULL
+);
+
+-- Contact images table
+CREATE TABLE IF NOT EXISTS contact_img (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'map', 'building')
+    image BLOB NOT NULL                 -- Contact-related image data
+);
