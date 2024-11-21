@@ -1,14 +1,14 @@
 import {
-    createContactImage,
-    getAll,
-    getByLabel,
-    updateContactImage,
-    deleteContactImage
+    createContactImg,
+    getAllContactImg,
+    getByLabelContactImg,
+    updateContactImg,
+    deleteContactImg
 } from '../models/contact-image.js';
 
 export const getAllImages = async (req, res) => {
     try {
-        const items = await getAll();
+        const items = await getAllContactImg();
         const processedItems = items.map(item => ({
             ...item,
             image: item.image.toString('base64')
@@ -22,7 +22,7 @@ export const getAllImages = async (req, res) => {
 export const getImageByLabel = async (req, res) => {
     try {
         const { label } = req.params;
-        const item = await getByLabel(label);
+        const item = await getByLabelContactImg(label);
         
         if (!item) {
             return res.status(404).json({ 
@@ -50,7 +50,7 @@ export const create = async (req, res) => {
             });
         }
 
-        await createContactImage(label, image);
+        await createContactImg(label, image);
         res.status(201).json({ 
             message: 'Contact image created successfully' 
         });
@@ -75,14 +75,14 @@ export const update = async (req, res) => {
             });
         }
 
-        const item = await getByLabel(label);
+        const item = await getByLabelContactImg(label);
         if (!item) {
             return res.status(404).json({ 
                 error: 'Contact image not found' 
             });
         }
 
-        await updateContactImage(label, image);
+        await updateContactImg(label, image);
         res.json({ 
             message: 'Contact image updated successfully' 
         });
@@ -95,14 +95,14 @@ export const remove = async (req, res) => {
     try {
         const { label } = req.params;
         
-        const item = await getByLabel(label);
+        const item = await getByLabelContactImg(label);
         if (!item) {
             return res.status(404).json({ 
                 error: 'Contact image not found' 
             });
         }
 
-        await deleteContactImage(label);
+        await deleteContactImg(label);
         res.json({ 
             message: 'Contact image deleted successfully' 
         });
