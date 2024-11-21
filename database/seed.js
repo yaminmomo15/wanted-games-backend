@@ -14,12 +14,7 @@ const __dirname = path.dirname(__filename);
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'website.db');
 const schemaPath = path.join(__dirname, 'schema.sql');
 
-/**
- * Database initialization and seeding function
- * Creates tables and populates with initial data
- */
 async function initializeDatabase() {
-    // Create a new database connection
     const db = new sqlite3.Database(dbPath, async (err) => {
         if (err) {
             console.error('Error connecting to database:', err);
@@ -29,18 +24,15 @@ async function initializeDatabase() {
     });
 
     try {
-        // Synchronous read for schema
         const schema = fs.readFileSync(schemaPath, 'utf8');
         
-        // Promisify database operations
-        const runAsync = (sql) => new Promise((resolve, reject) => {
-            db.run(sql, (err) => {
+        const runAsync = (sql, params = []) => new Promise((resolve, reject) => {
+            db.run(sql, params, function(err) {
                 if (err) reject(err);
-                else resolve();
+                else resolve(this);
             });
         });
 
-        // Execute each schema statement
         const statements = schema.split(';').filter(stmt => stmt.trim());
         for (let statement of statements) {
             await runAsync(statement);
@@ -48,40 +40,58 @@ async function initializeDatabase() {
 
         // Create default admin account
         const hashedPassword = await bcrypt.hash('admin123', 10);
-        await runAsync(`
-            INSERT OR IGNORE INTO admins (username, password)
-            VALUES ('admin', '${hashedPassword}')
-        `);
+        await runAsync(
+            'INSERT OR IGNORE INTO admins (username, password) VALUES (?, ?)',
+            ['admin', hashedPassword]
+        );
 
-        // Async read for image
+        // Sample image for testing
         const imagePath = path.join(__dirname, 'fixtures/images/sample1.jpg');
         const imageBuffer = await readFile(imagePath);
-        
-        // Insert sample content with image
-        const sampleContents = [
-            {
-                title: 'Welcome to Our Website',
-                body: 'This is our first article. We hope you enjoy your stay!',
-                image: imageBuffer,
-                imageType: 'image/jpeg'
-            },
-            {
-                title: 'Getting Started Guide',
-                body: 'Here are some tips to help you get started with our platform...',
-            }
-        ];
 
-        for (let content of sampleContents) {
-            await runAsync(`
-                INSERT INTO contents (title, body, created_by, image, image_type)
-                VALUES (
-                    '${content.title}',
-                    '${content.body}',
-                    (SELECT id FROM admins WHERE username = 'admin'),
-                    ?,
-                    '${content.imageType || null}'
-                )
-            `, content.image || null);
+        // Insert sample data
+        const sampleData = {
+            about_us: [
+                { label: 'mission', description: 'Our mission statement...' },
+                { label: 'vision', description: 'Our vision for the future...' }
+            ],
+            gallery: [
+                { label: 'team_photo', image: imageBuffer },
+                { label: 'office', image: imageBuffer }
+            ],
+            games: [
+                {
+                    label: 'racing_game',
+                    name: 'Speed Racer',
+                    description: 'An exciting racing game...',
+                    image_main: imageBuffer,
+                    image_1: imageBuffer,
+                    image_2: imageBuffer,
+                    image_3: imageBuffer
+                }
+            ],
+            contact: [
+                { label: 'email', description: 'contact@example.com' },
+                { label: 'phone', description: '+1234567890' }
+            ],
+            contact_img: [
+                { label: 'map', image: imageBuffer },
+                { label: 'building', image: imageBuffer }
+            ]
+        };
+
+        // Insert sample data for each table
+        for (const [table, data] of Object.entries(sampleData)) {
+            for (const item of data) {
+                const columns = Object.keys(item).join(', ');
+                const placeholders = Object.keys(item).map(() => '?').join(', ');
+                const values = Object.values(item);
+                
+                await runAsync(
+                    `INSERT OR IGNORE INTO ${table} (${columns}) VALUES (${placeholders})`,
+                    values
+                );
+            }
         }
 
         console.log('Database seeded successfully!');
@@ -92,16 +102,8 @@ async function initializeDatabase() {
     } catch (error) {
         console.error('Error seeding database:', error);
     } finally {
-        // Close database connection
-        db.close((err) => {
-            if (err) {
-                console.error('Error closing database:', err);
-            } else {
-                console.log('Database connection closed');
-            }
-        });
+        db.close();
     }
 }
 
-// Run the initialization
 initializeDatabase(); 
