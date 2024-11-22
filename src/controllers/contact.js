@@ -17,7 +17,7 @@ const listAll = async (req, res) => {
 
 const getByLabel = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         const contact = await findByLabel(label);
         
         if (!contact) {
@@ -50,8 +50,8 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { label } = req.params;
-        const { description } = req.body;
+        const { q: label } = req.query;
+        const { label:newLabel, description } = req.body;
         
         if (!description) {
             return res.status(400).json({ error: 'Description is required' });
@@ -62,7 +62,7 @@ const update = async (req, res) => {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        await modify(label, description);
+        await modify(contact.id, newLabel, description);
         res.json({ message: 'Contact updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -71,7 +71,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         
         const contact = await findByLabel(label);
         if (!contact) {
