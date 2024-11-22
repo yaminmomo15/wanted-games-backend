@@ -24,7 +24,7 @@ const listAll = async (req, res) => {
 
 const getByLabel = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         const game = await findByLabel(label);
         
         if (!game) {
@@ -48,6 +48,7 @@ const getByLabel = async (req, res) => {
 const create = async (req, res) => {
     try {
         const { label, name, description } = req.body;
+        console.log(label, name, description);
         const files = req.files;
 
         // Validation
@@ -63,15 +64,15 @@ const create = async (req, res) => {
             });
         }
 
-        await insert({
+        await insert(
             label,
             name,
             description,
-            image_main: files.image_main[0].buffer,
-            image_1: files.image_1?.[0]?.buffer || null,
-            image_2: files.image_2?.[0]?.buffer || null,
-            image_3: files.image_3?.[0]?.buffer || null
-        });
+            files.image_main[0].buffer,
+            files.image_1?.[0]?.buffer,
+            files.image_2?.[0]?.buffer,
+            files.image_3?.[0]?.buffer
+        );
 
         res.status(201).json({ 
             message: 'Game created successfully' 
@@ -88,8 +89,9 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { label } = req.params;
-        const { name, description } = req.body;
+        const { q: label } = req.query;
+        const { label:newLabel, name, description } = req.body;
+        console.log(newLabel, name, description);
         const files = req.files;
 
         // Validation
@@ -106,15 +108,17 @@ const update = async (req, res) => {
             });
         }
 
-        await modify({
-            label,
+
+        await modify(
+            game.id,
+            newLabel,
             name,
             description,
-            image_main: files?.image_main?.[0]?.buffer,
-            image_1: files?.image_1?.[0]?.buffer,
-            image_2: files?.image_2?.[0]?.buffer,
-            image_3: files?.image_3?.[0]?.buffer
-        });
+            files?.image_main?.[0]?.buffer,
+            files?.image_1?.[0]?.buffer,
+            files?.image_2?.[0]?.buffer,
+            files?.image_3?.[0]?.buffer
+        );
 
         res.json({ 
             message: 'Game updated successfully' 
@@ -126,7 +130,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         
         const game = await findByLabel(label);
         if (!game) {
