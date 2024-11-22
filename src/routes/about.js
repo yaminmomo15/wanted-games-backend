@@ -12,11 +12,11 @@ const router = express.Router();
 
 // Public routes - anyone can view about content
 router.get('/', listAll);
-router.get('/:label', getByLabel);
+router.get('/search', getByLabel);
 
 // Protected routes - only authenticated admins can modify
 router.post('/', authenticateToken, create);
-router.put('/:label', authenticateToken, update);
-router.delete('/:label', authenticateToken, remove);
+router.put('/', authenticateToken, update);
+router.delete('/', authenticateToken, remove);
 
 export default router; 

@@ -15,11 +15,11 @@ const listAll = async (req, res) => {
     }
 };
 
-const getByLabel     = async (req, res) => {
-    try {
-        const { label } = req.params;
+const getByLabel = async (req, res) => {
+    try {   
+        const { q: label } = req.query;        
         const item = await findByLabel(label);
-        
+
         if (!item) {
             return res.status(404).json({ error: 'About item not found' });
         }
@@ -56,8 +56,8 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { label } = req.params;
-        const { description } = req.body;
+        const { q: label } = req.query;
+        const { label:newLabel, description } = req.body;
         
         if (!description) {
             return res.status(400).json({ 
@@ -72,7 +72,7 @@ const update = async (req, res) => {
             });
         }
 
-        await modify(label, description);
+        await modify(item.id, newLabel, description);
         res.json({ 
             message: 'About item updated successfully' 
         });
@@ -83,7 +83,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         
         const item = await findByLabel(label);
         if (!item) {

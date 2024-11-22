@@ -11,6 +11,6 @@ const router = express.Router();
 router.post('/login', create);  // create session/token
 
 // Protected routes
-router.get('/profile', authenticateToken, getByUsername);
+router.get('/profile', authenticateToken, getByUsername); // get admin profile
 
 export default router; 

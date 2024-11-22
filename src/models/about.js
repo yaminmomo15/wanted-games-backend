@@ -19,10 +19,10 @@ const findByLabel = async (label) => {
     return result[0];
 };
 
-const modify = async (label, description) => {
+const modify = async (id, label, description) => {
     return await db.runAsync(
-        'UPDATE about_us SET description = ? WHERE label = ?',
-        [description, label]
+        'UPDATE about_us SET label = ?, description = ? WHERE id = ?',
+        [label, description, id]
     );
 };
 
