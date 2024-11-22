@@ -4,7 +4,7 @@ import { findByUsername, validate } from '../models/admin.js';
 const create = async (req, res) => {
     try {
         const { username, password } = req.body;
-
+        
         // Validate request body
         if (!username || !password) {
             return res.status(400).json({ 

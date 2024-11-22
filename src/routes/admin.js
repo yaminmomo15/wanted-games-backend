@@ -8,9 +8,9 @@ import { authenticateToken } from '../middleware/auth.js';
 const router = express.Router();
 
 // Public routes
-router.post('/login', create);  // create session/token
+router.post('/', create);  // create session/token
 
 // Protected routes
-router.get('/profile', authenticateToken, getByUsername); // get admin profile
+router.get('/', authenticateToken, getByUsername); // get admin profile
 
 export default router; 
