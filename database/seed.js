@@ -52,18 +52,18 @@ async function initializeDatabase() {
         // Insert sample data
         const sampleData = {
             about_us: [
-                { label: 'mission', description: 'Our mission statement...' },
-                { label: 'vision', description: 'Our vision for the future...' }
+                { label: 'button1', description: 'contact us' },
+                { label: 'button2', description: 'about us' }
             ],
             gallery: [
-                { label: 'team_photo', image: imageBuffer },
-                { label: 'office', image: imageBuffer }
+                { label: 'image1', image: imageBuffer },
+                { label: 'image2', image: imageBuffer }
             ],
             games: [
                 {
-                    label: 'racing_game',
-                    name: 'Speed Racer',
-                    description: 'An exciting racing game...',
+                    label: 'game1',
+                    name: 'sample game 1',
+                    description: 'An exciting board game...',
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
@@ -75,8 +75,8 @@ async function initializeDatabase() {
                 { label: 'phone', description: '+1234567890' }
             ],
             contact_image: [
-                { label: 'map', image: imageBuffer },
-                { label: 'building', image: imageBuffer }
+                { label: 'phone-image1', image: imageBuffer },
+                { label: 'phone-image2', image: imageBuffer }
             ]
         };
 
