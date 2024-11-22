@@ -1,10 +1,9 @@
 import db from '../config/db.js';
 
-const insert = async (label, name, description, image_main, image_1 = null, image_2 = null, image_3 = null) => {
-    // console.log(label, name, description, image_main, image_1, image_2, image_3);
+const insert = async (label, name, description_1, description_2, image_main, image_1 = null, image_2 = null, image_3 = null) => {
     return await db.runAsync(
-        'INSERT INTO games (label, name, description, image_main, image_1, image_2, image_3) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [label, name, description, image_main, image_1, image_2, image_3]
+        'INSERT INTO games (label, name, description_1, description_2, image_main, image_1, image_2, image_3) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [label, name, description_1, description_2, image_main, image_1, image_2, image_3]
     );
 };
 
@@ -20,9 +19,9 @@ const findByLabel = async (label) => {
     return result[0];
 };
 
-const  modify = async (id, label, name, description, image_main = null, image_1 = null, image_2 = null, image_3 = null) => {
-    let sql = 'UPDATE games SET label = ?, name = ?, description = ?';
-    const params = [label, name, description];
+const  modify = async (id, label, name, description_1, description_2, image_main = null, image_1 = null, image_2 = null, image_3 = null) => {
+    let sql = 'UPDATE games SET label = ?, name = ?, description_1 = ?, description_2 = ?';
+    const params = [label, name, description_1, description_2];
 
     if (image_main) {
         sql += ', image_main = ?';

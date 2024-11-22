@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'racing_game', 'puzzle_game')
     name TEXT NOT NULL,                 -- Game name
-    description TEXT NOT NULL,          -- Game description
+    description_1 TEXT NOT NULL,        -- First game description
+    description_2 TEXT NOT NULL,        -- Second game description
     image_main BLOB NOT NULL,           -- Main game image
     image_1 BLOB,                       -- Additional game image 1
     image_2 BLOB,                       -- Additional game image 2

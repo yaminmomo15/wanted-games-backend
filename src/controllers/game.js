@@ -47,14 +47,14 @@ const getByLabel = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const { label, name, description } = req.body;
-        console.log(label, name, description);
+        const { label, name, description_1, description_2 } = req.body;
+        console.log(label, name, description_1, description_2);
         const files = req.files;
 
         // Validation
-        if (!label || !name || !description) {
+        if (!label || !name || !description_1 || !description_2) {
             return res.status(400).json({ 
-                error: 'Label, name, and description are required' 
+                error: 'Label, name, description_1, and description_2 are required' 
             });
         }
 
@@ -67,7 +67,8 @@ const create = async (req, res) => {
         await insert(
             label,
             name,
-            description,
+            description_1,
+            description_2,
             files.image_main[0].buffer,
             files.image_1?.[0]?.buffer,
             files.image_2?.[0]?.buffer,
@@ -90,14 +91,13 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { q: label } = req.query;
-        const { label:newLabel, name, description } = req.body;
-        console.log(newLabel, name, description);
+        const { label: newLabel, name, description_1, description_2 } = req.body;
         const files = req.files;
 
         // Validation
-        if (!name || !description) {
+        if (!name || !description_1 || !description_2) {
             return res.status(400).json({ 
-                error: 'Name and description are required' 
+                error: 'Name, description_1, and description_2 are required' 
             });
         }
 
@@ -108,12 +108,12 @@ const update = async (req, res) => {
             });
         }
 
-
         await modify(
             game.id,
             newLabel,
             name,
-            description,
+            description_1,
+            description_2,
             files?.image_main?.[0]?.buffer,
             files?.image_1?.[0]?.buffer,
             files?.image_2?.[0]?.buffer,

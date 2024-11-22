@@ -63,7 +63,8 @@ async function initializeDatabase() {
                 {
                     label: 'game1',
                     name: 'sample game 1',
-                    description: 'An exciting board game...',
+                    description_1: 'An exciting board game...',
+                    description_2: 'How to play...',
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
