@@ -13,7 +13,7 @@ const router = express.Router();
 
 // Public routes - anyone can view gallery images
 router.get('/', listAll);
-router.get('/:label', getByLabel);
+router.get('/search', getByLabel);
 
 // Protected routes - only authenticated admins can modify
 // Use upload.single() middleware for image handling
@@ -23,13 +23,13 @@ router.post('/',
     create
 );
 
-router.put('/:label', 
+router.put('/', 
     authenticateToken, 
     upload.single('image'), 
     update
 );
 
-router.delete('/:label', 
+router.delete('/', 
     authenticateToken, 
     remove
 );

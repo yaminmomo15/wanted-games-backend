@@ -19,10 +19,10 @@ const findByLabel = async (label) => {
     return result[0];
 };
 
-const modify = async (label, image) => {
+const modify = async (id, label, image) => {
     return await db.runAsync(
-        'UPDATE gallery SET image = ? WHERE label = ?',
-        [image, label]
+        'UPDATE gallery SET label = ?, image = ? WHERE id = ?',
+        [label, image, id]
     );
 };
 

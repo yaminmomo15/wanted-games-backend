@@ -21,7 +21,7 @@ const listAll = async (req, res) => {
 
 const getByLabel = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         const item = await findByLabel(label);
         
         if (!item) {
@@ -58,7 +58,8 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
+        const { label:newLabel } = req.body;
         const image = req.file?.buffer;
         
         if (!image) {
@@ -70,7 +71,7 @@ const update = async (req, res) => {
             return res.status(404).json({ error: 'Gallery item not found' });
         }
 
-        await modify(label, image);
+        await modify(item.id, newLabel, image);
         res.json({ message: 'Gallery item updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -79,7 +80,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         const item = await findByLabel(label);
         
         if (!item) {
