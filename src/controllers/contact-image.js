@@ -21,7 +21,7 @@ const listAll = async (req, res) => {
 
 const getByLabel = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         const item = await findByLabel(label);
         
         if (!item) {
@@ -66,7 +66,8 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
+        const { label:newLabel } = req.body;
         const image = req.file?.buffer;
         
         if (!image) {
@@ -82,7 +83,7 @@ const update = async (req, res) => {
             });
         }
 
-        await modify(label, image);
+        await modify(item.id, newLabel, image);
         res.json({ 
             message: 'Contact image updated successfully' 
         });
@@ -93,7 +94,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { label } = req.params;
+        const { q: label } = req.query;
         
         const item = await findByLabel(label);
         if (!item) {
