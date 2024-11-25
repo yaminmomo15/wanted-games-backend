@@ -3,7 +3,8 @@ import {
     findAll,
     findByLabel,
     modify,
-    destroy
+    destroy,
+    findById
 } from '../models/game.js';
 
 const listAll = async (req, res) => {
@@ -124,6 +125,7 @@ const update = async (req, res) => {
             message: 'Game updated successfully' 
         });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -148,10 +150,34 @@ const remove = async (req, res) => {
     }
 };
 
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const game = await findById(id);
+        
+        if (!game) {
+            return res.status(404).json({ 
+                error: 'Game not found' 
+            });
+        }
+        
+        res.json({
+            ...game,
+            image_main: game.image_main.toString('base64'),
+            image_1: game.image_1?.toString('base64'),
+            image_2: game.image_2?.toString('base64'),
+            image_3: game.image_3?.toString('base64')
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export { 
     listAll,
     getByLabel,
     create,
     update,
-    remove 
+    remove,
+    getById
 };

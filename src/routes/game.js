@@ -4,7 +4,8 @@ import {
     getByLabel, 
     create, 
     update, 
-    remove 
+    remove, 
+    getById 
 } from '../controllers/game.js';
 import { authenticateToken } from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
@@ -22,6 +23,7 @@ const gameUpload = upload.fields([
 // Public routes - anyone can view games
 router.get('/', listAll);
 router.get('/search', getByLabel);
+router.get('/:id', getById);
 
 // Protected routes - only authenticated admins can modify
 router.post('/', 

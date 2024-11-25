@@ -50,4 +50,16 @@ const destroy = async (label) => {
     return await db.runAsync('DELETE FROM games WHERE label = ?', [label]);
 };
 
-export { insert, findAll, findByLabel, modify, destroy }; 
+const findById = async (id) => {
+    try {
+        const game = await db.get(
+            `SELECT * FROM games WHERE id = ?`,
+            [id]
+        );
+        return game;
+    } catch (error) {
+        throw new Error(`Error finding game by ID: ${error.message}`);
+    }
+};
+
+export { insert, findAll, findByLabel, modify, destroy, findById }; 
