@@ -2,6 +2,13 @@
 
 Backend service for the Wanted Games web application.
 
+## Tech Stack
+- Node.js & Express.js
+- SQLite3 for database
+- JWT for authentication
+- Multer for file uploads
+- bcrypt for password hashing
+
 ## Prerequisites
 - Node.js (v14+)
 - npm
