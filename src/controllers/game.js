@@ -69,13 +69,15 @@ const update = async (req, res) => {
         const { id } = req.params;
         const { title, description_1, description_2 } = req.body;
         const files = req.files;
-
+  
         // Validation
-        if (!title || !description_1 || !description_2 || !files?.image_main || !files?.image_1 || !files?.image_2 || !files?.image_3) {
+        if (!title || !description_1 || !description_2) {
             return res.status(400).json({
                 error: 'Title, description_1, and description_2 are required'
             });
         }
+
+        console.log('validating game');
 
         const game = await findById(id);
         if (!game) {
@@ -84,6 +86,7 @@ const update = async (req, res) => {
             });
         }
 
+        console.log('updating game');
         await modify(
             game.id,
             title,
@@ -95,6 +98,7 @@ const update = async (req, res) => {
             files?.image_3?.[0]?.buffer
         );
 
+        console.log('game updated successfully');
         res.json({
             message: 'Game updated successfully'
         });
