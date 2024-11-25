@@ -61,8 +61,7 @@ async function initializeDatabase() {
             ],
             games: [
                 {
-                    label: 'game1',
-                    name: 'sample game 1',
+                    title: 'harvest-moon',
                     description_1: 'An exciting board game...',
                     description_2: 'How to play...',
                     image_main: imageBuffer,
@@ -71,8 +70,7 @@ async function initializeDatabase() {
                     image_3: imageBuffer
                 },
                 {
-                    label: 'game2',
-                    name: 'sample game 2',
+                    title: 'sonic-the-hedgehog',
                     description_1: 'An exciting board game2...',
                     description_2: 'How to play2...',
                     image_main: imageBuffer,
