@@ -8,7 +8,7 @@ const insert = async (title, description_1, description_2, image_main, image_1 =
 };
 
 const findAll = async () => {
-    return await db.allAsync('SELECT * FROM games ORDER BY id ASC');
+    return await db.allAsync('SELECT id, title FROM games ORDER BY id ASC');
 };
 
 const  modify = async (id, title, description_1, description_2, image_main = null, image_1 = null, image_2 = null, image_3 = null) => {

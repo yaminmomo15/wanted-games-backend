@@ -9,14 +9,7 @@ import {
 const listAll = async (req, res) => {
     try {
         const games = await findAll();
-        const processedGames = games.map(game => ({
-            ...game,
-            image_main: game.image_main.toString('base64'),
-            image_1: game.image_1?.toString('base64'),
-            image_2: game.image_2?.toString('base64'),
-            image_3: game.image_3?.toString('base64')
-        }));
-        res.json(processedGames);
+        res.json(games);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -24,6 +17,7 @@ const listAll = async (req, res) => {
 
 const create = async (req, res) => {
     try {
+
         const { title, description_1, description_2 } = req.body;
         console.log(title, description_1, description_2);
         const files = req.files;
@@ -41,6 +35,7 @@ const create = async (req, res) => {
             });
         }
 
+        console.log('inserting game');
         await insert(
             title,
             description_1,
@@ -77,8 +72,6 @@ const update = async (req, res) => {
             });
         }
 
-        console.log('validating game');
-
         const game = await findById(id);
         if (!game) {
             return res.status(404).json({
@@ -98,7 +91,6 @@ const update = async (req, res) => {
             files?.image_3?.[0]?.buffer
         );
 
-        console.log('game updated successfully');
         res.json({
             message: 'Game updated successfully'
         });
