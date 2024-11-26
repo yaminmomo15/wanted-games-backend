@@ -79,6 +79,26 @@ async function initializeDatabase() {
                     image_1: imageBuffer,
                     image_2: imageBuffer,
                     image_3: imageBuffer
+                },
+                {
+                    sort_id: 3,
+                    title: 'sample game 3',
+                    description_1: 'An exciting board game3...',
+                    description_2: 'How to play3...',
+                    image_main: imageBuffer,
+                    image_1: imageBuffer,
+                    image_2: imageBuffer,
+                    image_3: imageBuffer
+                },
+                {
+                    sort_id: 4,
+                    title: 'sample game 4',
+                    description_1: 'An exciting board game4...',
+                    description_2: 'How to play4...',
+                    image_main: imageBuffer,
+                    image_1: imageBuffer,
+                    image_2: imageBuffer,
+                    image_3: imageBuffer
                 }
             ],
             contact: [

@@ -3,7 +3,8 @@ import {
     findAll,
     modify,
     destroy,
-    findById
+    findById,
+    findLargestSortId
 } from '../models/game.js';
 
 const listAll = async (req, res) => {
@@ -21,6 +22,8 @@ const listAll = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
 
 const create = async (req, res) => {
     try {
@@ -41,23 +44,29 @@ const create = async (req, res) => {
             });
         }
 
-        await insert(
+        // Get the next sort_id
+        const largestSortId = await findLargestSortId() || 0;
+        const nextSortId = largestSortId + 1;
+
+        const result = await insert(
             title,
             description_1,
             description_2,
             files.image_main[0].buffer,
             files.image_1?.[0]?.buffer,
             files.image_2?.[0]?.buffer,
-            files.image_3?.[0]?.buffer
+            files.image_3?.[0]?.buffer,
+            nextSortId
         );
-
+        
         res.status(201).json({
-            message: 'Game created successfully'
+            sort_id: result.sort_id,
+            id: result.id
         });
     } catch (error) {
         if (error.message.includes('UNIQUE constraint failed')) {
             return res.status(400).json({
-                error: 'Title must be unique'
+                error: error.message
             });
         }
         res.status(500).json({ error: error.message });

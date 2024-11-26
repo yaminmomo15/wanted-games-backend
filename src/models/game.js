@@ -1,10 +1,13 @@
 import db from '../config/db.js';
 
-const insert = async (title, description_1, description_2, image_main, image_1 = null, image_2 = null, image_3 = null) => {
-    return await db.runAsync(
-        'INSERT INTO games (title, description_1, description_2, image_main, image_1, image_2, image_3) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [title, description_1, description_2, image_main, image_1, image_2, image_3]
+const insert = async (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id) => {
+    await db.runAsync(
+        `INSERT INTO games (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id]
     );
+    const result = await db.allAsync('SELECT id, sort_id FROM games WHERE id = (SELECT MAX(id) FROM games)');
+    return result[0];
 };
 
 const findAll = async () => {
@@ -54,4 +57,9 @@ const findById = async (id) => {
     }
 };
 
-export { insert, findAll, modify, destroy, findById }; 
+const findLargestSortId = async () => {
+    const result = await db.allAsync('SELECT MAX(sort_id) as maxSortId FROM games');
+    return result[0].maxSortId;
+};
+
+export { insert, findAll, modify, destroy, findById, findLargestSortId }; 
