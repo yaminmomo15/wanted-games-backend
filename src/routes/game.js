@@ -1,7 +1,6 @@
 import express from 'express';
 import { 
-    listAll, 
-    getByLabel, 
+    listAll,  
     create, 
     update, 
     remove, 
@@ -22,7 +21,6 @@ const gameUpload = upload.fields([
 
 // Public routes - anyone can view games
 router.get('/', listAll);
-router.get('/search', getByLabel);
 router.get('/:id', getById);
 
 // Protected routes - only authenticated admins can modify
@@ -32,13 +30,13 @@ router.post('/',
     create
 );
 
-router.put('/', 
+router.put('/:id', 
     authenticateToken,
     gameUpload,
     update
 );
 
-router.delete('/', 
+router.delete('/:id', 
     authenticateToken,
     remove
 );
