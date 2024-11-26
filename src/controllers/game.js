@@ -71,7 +71,7 @@ const update = async (req, res) => {
         const files = req.files;
 
         // Validation
-        if (!title || !description_1 || !description_2 || !files?.image_main || !files?.image_1 || !files?.image_2 || !files?.image_3) {
+        if (!title || !description_1 || !description_2 ) {
             return res.status(400).json({
                 error: 'Title, description_1, and description_2 are required'
             });
