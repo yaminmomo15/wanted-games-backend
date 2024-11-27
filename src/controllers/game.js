@@ -4,7 +4,8 @@ import {
     modify,
     destroy,
     findById,
-    findLargestSortId
+    findLargestSortId,
+    updateSortOrder
 } from '../models/game.js';
 
 const listAll = async (req, res) => {
@@ -27,14 +28,13 @@ const listAll = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const { title, description_1, description_2 } = req.body;
-        console.log(title, description_1, description_2);
+        const { title, description_1, description_2, background_color, text_color } = req.body;
         const files = req.files;
 
         // Validation
-        if (!title || !description_1 || !description_2) {
+        if (!title || !description_1 || !description_2 || !background_color || !text_color) {
             return res.status(400).json({
-                error: 'Title, description_1, and description_2 are required'
+                error: 'Title, description_1, description_2, background_color, and text_color are required'
             });
         }
 
@@ -56,7 +56,9 @@ const create = async (req, res) => {
             files.image_1?.[0]?.buffer,
             files.image_2?.[0]?.buffer,
             files.image_3?.[0]?.buffer,
-            nextSortId
+            nextSortId,
+            background_color,
+            text_color
         );
         
         res.status(201).json({
@@ -76,13 +78,13 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description_1, description_2 } = req.body;
+        const { title, description_1, description_2, background_color, text_color } = req.body;
         const files = req.files;
 
         // Validation
-        if (!title || !description_1 || !description_2 ) {
+        if (!title || !description_1 || !description_2 || !background_color || !text_color) {
             return res.status(400).json({
-                error: 'Title, description_1, and description_2 are required'
+                error: 'Title, description_1, description_2, background_color, and text_color are required'
             });
         }
 
@@ -101,14 +103,15 @@ const update = async (req, res) => {
             files?.image_main?.[0]?.buffer,
             files?.image_1?.[0]?.buffer,
             files?.image_2?.[0]?.buffer,
-            files?.image_3?.[0]?.buffer
+            files?.image_3?.[0]?.buffer,
+            background_color,
+            text_color
         );
 
         res.json({
             message: 'Game updated successfully'
         });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -156,10 +159,36 @@ const getById = async (req, res) => {
     }
 };
 
+const updateSort = async (req, res) => {
+    try {
+        const updates = req.body;
+        
+        
+        // Validate the input
+        if (!Array.isArray(updates)) {
+            return res.status(400).json({
+                error: 'Request body must be an array'
+            });
+        }
+
+        if (!updates.every(item => item.id && typeof item.sort_id === 'number')) {
+            return res.status(400).json({
+                error: 'Each item must have id and sort_id properties'
+            });
+        }
+
+        await updateSortOrder(updates);
+        res.json({ message: 'Sort order updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export {
     listAll,
     create,
     update,
     remove,
-    getById
+    getById,
+    updateSort
 };

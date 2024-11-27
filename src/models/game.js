@@ -1,10 +1,10 @@
 import db from '../config/db.js';
 
-const insert = async (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id) => {
+const insert = async (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color) => {
     await db.runAsync(
-        `INSERT INTO games (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id]
+        `INSERT INTO games (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color]
     );
     const result = await db.allAsync('SELECT id, sort_id FROM games WHERE id = (SELECT MAX(id) FROM games)');
     return result[0];
@@ -14,9 +14,9 @@ const findAll = async () => {
     return await db.allAsync('SELECT * FROM games ORDER BY sort_id ASC');
 };
 
-const  modify = async (id, title, description_1, description_2, image_main = null, image_1 = null, image_2 = null, image_3 = null) => {
-    let sql = 'UPDATE games SET title = ?, description_1 = ?, description_2 = ?';
-    const params = [title, description_1, description_2];
+const  modify = async (id, title, description_1, description_2, image_main = null, image_1 = null, image_2 = null, image_3 = null, background_color, text_color) => {
+    let sql = 'UPDATE games SET title = ?, description_1 = ?, description_2 = ?, background_color = ?, text_color = ?';
+    const params = [title, description_1, description_2, background_color, text_color];
 
     if (image_main) {
         sql += ', image_main = ?';
@@ -62,4 +62,20 @@ const findLargestSortId = async () => {
     return result[0].maxSortId;
 };
 
-export { insert, findAll, modify, destroy, findById, findLargestSortId }; 
+const updateSortOrder = async (updates) => {
+    const sql = 'UPDATE games SET sort_id = ? WHERE id = ?';
+    
+    // Use a transaction to ensure all updates succeed or none do
+    await db.runAsync('BEGIN TRANSACTION');
+    try {
+        for (const update of updates) {
+            await db.runAsync(sql, [update.sort_id, update.id]);
+        }
+        await db.runAsync('COMMIT');
+    } catch (error) {
+        await db.runAsync('ROLLBACK');
+        throw error;
+    }
+};
+
+export { insert, findAll, modify, destroy, findById, findLargestSortId, updateSortOrder }; 

@@ -68,7 +68,9 @@ async function initializeDatabase() {
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
-                    image_3: imageBuffer
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
                 },
                 {
                     sort_id: 2,
@@ -78,7 +80,9 @@ async function initializeDatabase() {
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
-                    image_3: imageBuffer
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
                 },
                 {
                     sort_id: 3,
@@ -88,7 +92,9 @@ async function initializeDatabase() {
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
-                    image_3: imageBuffer
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
                 },
                 {
                     sort_id: 4,
@@ -98,7 +104,9 @@ async function initializeDatabase() {
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
-                    image_3: imageBuffer
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
                 }
             ],
             contact: [

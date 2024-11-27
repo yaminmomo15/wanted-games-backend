@@ -4,7 +4,8 @@ import {
     create, 
     update, 
     remove, 
-    getById 
+    getById,
+    updateSort 
 } from '../controllers/game.js';
 import { authenticateToken } from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
@@ -39,6 +40,11 @@ router.put('/:id',
 router.delete('/:id', 
     authenticateToken,
     remove
+);
+
+router.patch('/reorder', 
+    authenticateToken,
+    updateSort
 );
 
 export default router; 
