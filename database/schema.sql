@@ -24,10 +24,13 @@ CREATE TABLE IF NOT EXISTS gallery (
 -- Games table
 CREATE TABLE IF NOT EXISTS games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,                -- Game title
-    description_1 TEXT NOT NULL,        -- First game description
-    description_2 TEXT NOT NULL,        -- Second game description
-    image_main BLOB NOT NULL,           -- Main game image
+    sort_id INTEGER NOT NULL,    -- Unique identifier (e.g., 1, 2, 3)
+    title TEXT NOT NULL,               -- Game title
+    description_1 TEXT NOT NULL,       -- First game description
+    description_2 TEXT NOT NULL,       -- Second game description
+    background_color TEXT NOT NULL,    -- Background color for the game section
+    text_color TEXT NOT NULL,          -- Text color for the game section
+    image_main BLOB NOT NULL,          -- Main game image
     image_1 BLOB,                       -- Additional game image 1
     image_2 BLOB,                       -- Additional game image 2
     image_3 BLOB                        -- Additional game image 3

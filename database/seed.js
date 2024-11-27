@@ -61,22 +61,52 @@ async function initializeDatabase() {
             ],
             games: [
                 {
-                    title: 'harvest-moon',
+                    sort_id: 1,
+                    title: 'sample game 1',
                     description_1: 'An exciting board game...',
                     description_2: 'How to play...',
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
-                    image_3: imageBuffer
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
                 },
                 {
-                    title: 'sonic-the-hedgehog',
+                    sort_id: 2,
+                    title: 'sample game 2',
                     description_1: 'An exciting board game2...',
                     description_2: 'How to play2...',
                     image_main: imageBuffer,
                     image_1: imageBuffer,
                     image_2: imageBuffer,
-                    image_3: imageBuffer
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
+                },
+                {
+                    sort_id: 3,
+                    title: 'sample game 3',
+                    description_1: 'An exciting board game3...',
+                    description_2: 'How to play3...',
+                    image_main: imageBuffer,
+                    image_1: imageBuffer,
+                    image_2: imageBuffer,
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
+                },
+                {
+                    sort_id: 4,
+                    title: 'sample game 4',
+                    description_1: 'An exciting board game4...',
+                    description_2: 'How to play4...',
+                    image_main: imageBuffer,
+                    image_1: imageBuffer,
+                    image_2: imageBuffer,
+                    image_3: imageBuffer,
+                    background_color: '#000000',
+                    text_color: '#FFFFFF'
                 }
             ],
             contact: [
