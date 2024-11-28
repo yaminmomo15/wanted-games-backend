@@ -1,37 +1,44 @@
 import express from 'express';
 import { 
     listAll, 
-    getByLabel, 
+    getById, 
     create, 
     update, 
-    remove 
+    remove,
+    updateSort
 } from '../controllers/gallery.js';
 import { authenticateToken } from '../middleware/auth.js';
 import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
+const galleryUpload = upload.single('image');
 // Public routes - anyone can view gallery images
 router.get('/', listAll);
-router.get('/search', getByLabel);
+router.get('/:id', getById);
 
 // Protected routes - only authenticated admins can modify
 // Use upload.single() middleware for image handling
 router.post('/', 
     authenticateToken, 
-    upload.single('image'), 
+    galleryUpload, 
     create
 );
 
-router.put('/', 
+router.put('/:id', 
     authenticateToken, 
-    upload.single('image'), 
+    galleryUpload, 
     update
 );
 
-router.delete('/', 
+router.delete('/:id', 
     authenticateToken, 
     remove
+);
+
+router.patch('/reorder', 
+    authenticateToken,
+    updateSort
 );
 
 export default router; 

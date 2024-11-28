@@ -56,8 +56,8 @@ async function initializeDatabase() {
                 { label: 'button2', description: 'about us' }
             ],
             gallery: [
-                { label: 'image1', image: imageBuffer },
-                { label: 'image2', image: imageBuffer }
+                { sort_id: 1, image: imageBuffer },
+                { sort_id: 2, image: imageBuffer }
             ],
             games: [
                 {

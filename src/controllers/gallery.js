@@ -1,9 +1,11 @@
 import {
     insert,
     findAll,
-    findByLabel,
+    findById,
     modify,
-    destroy
+    destroy,
+    findLargestSortId,
+    updateSortOrder,
 } from '../models/gallery.js';
 
 const listAll = async (req, res) => {
@@ -19,10 +21,10 @@ const listAll = async (req, res) => {
     }
 };
 
-const getByLabel = async (req, res) => {
+const getById = async (req, res) => {
     try {
-        const { q: label } = req.query;
-        const item = await findByLabel(label);
+        const { id } = req.params;
+        const item = await findById(id);
         
         if (!item) {
             return res.status(404).json({ error: 'Gallery item not found' });
@@ -39,14 +41,17 @@ const getByLabel = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const { label } = req.body;
         const image = req.file?.buffer;
         
-        if (!label || !image) {
-            return res.status(400).json({ error: 'Label and image are required' });
+        if (!image) {
+            return res.status(400).json({ error: 'Image is required' });
         }
 
-        await insert(label, image);
+        // Get the next sort_id
+        const largestSortId = await findLargestSortId() || 0;
+        const nextSortId = largestSortId + 1;
+
+        await insert(nextSortId, image);
         res.status(201).json({ message: 'Gallery item created successfully' });
     } catch (error) {
         if (error.message.includes('UNIQUE constraint failed')) {
@@ -58,20 +63,19 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { q: label } = req.query;
-        const { label:newLabel } = req.body;
+        const { id } = req.params;
         const image = req.file?.buffer;
         
         if (!image) {
             return res.status(400).json({ error: 'Image is required' });
         }
 
-        const item = await findByLabel(label);
+        const item = await findById(id);
         if (!item) {
             return res.status(404).json({ error: 'Gallery item not found' });
         }
 
-        await modify(item.id, newLabel, image);
+        await modify(id, image);
         res.json({ message: 'Gallery item updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -80,15 +84,40 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { q: label } = req.query;
-        const item = await findByLabel(label);
+        const { id } = req.params;
+        const item = await findById(id);
         
         if (!item) {
             return res.status(404).json({ error: 'Gallery item not found' });
         }
 
-        await destroy(label);
+        await destroy(id);
         res.json({ message: 'Gallery item deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const updateSort = async (req, res) => {
+    try {
+        const updates = req.body;
+        
+        
+        // Validate the input
+        if (!Array.isArray(updates)) {
+            return res.status(400).json({
+                error: 'Request body must be an array'
+            });
+        }
+
+        if (!updates.every(item => item.id && typeof item.sort_id === 'number')) {
+            return res.status(400).json({
+                error: 'Each item must have id and sort_id properties'
+            });
+        }
+
+        await updateSortOrder(updates);
+        res.json({ message: 'Sort order updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -96,8 +125,9 @@ const remove = async (req, res) => {
 
 export { 
     listAll,
-    getByLabel,
+    getById,
     create,
     update,
-    remove 
+    remove,
+    updateSort
 };

@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS about_us (
 -- Gallery table
 CREATE TABLE IF NOT EXISTS gallery (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'team_photo', 'office')
-    image BLOB NOT NULL                 -- Image data stored as BLOB
+    sort_id INTEGER NOT NULL,          -- Sorting order 
+    image BLOB NOT NULL             -- Image data stored as BLOB
 );
 
 -- Games table

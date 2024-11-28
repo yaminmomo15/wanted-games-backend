@@ -1,33 +1,54 @@
 import db from '../config/db.js';
 
-const insert = async (label, image) => {
+const insert = async (sortId, image) => {
     return await db.runAsync(
-        'INSERT INTO gallery (label, image) VALUES (?, ?)',
-        [label, image]
+        'INSERT INTO gallery (sort_id, image) VALUES (?, ?)',
+        [sortId, image]
     );
 };
 
 const findAll = async () => {
-    return await db.allAsync('SELECT * FROM gallery');
+    return await db.allAsync('SELECT * FROM gallery ORDER BY sort_id ASC');
 };
 
-const findByLabel = async (label) => {
+const findById = async (id) => {
     const result = await db.allAsync(
-        'SELECT * FROM gallery WHERE label = ?',
-        [label]
+        'SELECT * FROM gallery WHERE id = ?',
+        [id]
     );
     return result[0];
 };
 
-const modify = async (id, label, image) => {
+const modify = async (id, image) => {
     return await db.runAsync(
-        'UPDATE gallery SET label = ?, image = ? WHERE id = ?',
-        [label, image, id]
+        'UPDATE gallery SET image = ? WHERE id = ?',
+        [image, id]
     );
 };
 
-const destroy = async (label) => {
-    return await db.runAsync('DELETE FROM gallery WHERE label = ?', [label]);
+const findLargestSortId = async () => {
+    const result = await db.allAsync('SELECT MAX(sort_id) as maxSortId FROM gallery');
+    return result[0].maxSortId;
 };
 
-export { insert, findAll, findByLabel, modify, destroy }; 
+const updateSortOrder = async (updates) => {
+    const sql = 'UPDATE gallery SET sort_id = ? WHERE id = ?';
+    
+    // Use a transaction to ensure all updates succeed or none do
+    await db.runAsync('BEGIN TRANSACTION');
+    try {
+        for (const update of updates) {
+            await db.runAsync(sql, [update.sort_id, update.id]);
+        }
+        await db.runAsync('COMMIT');
+    } catch (error) {
+        await db.runAsync('ROLLBACK');
+        throw error;
+    }
+};
+
+const destroy = async (id) => {
+    return await db.runAsync('DELETE FROM gallery WHERE id = ?', [id]);
+};
+
+export { insert, findAll, findById, modify, destroy, findLargestSortId, updateSortOrder }; 
