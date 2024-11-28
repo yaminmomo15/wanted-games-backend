@@ -51,6 +51,9 @@ async function initializeDatabase() {
 
         // Insert sample data
         const sampleData = {
+            home: [
+                { sort_id: 1, header: 'header', image: imageBuffer, paragraph_1: 'paragraph1', paragraph_2: 'paragraph2', action: 'action' }
+            ],
             about: [
                 { sort_id: 1, title: 'about us', image: imageBuffer, paragraph_1: 'paragraph1', paragraph_2: 'paragraph2', paragraph_3: 'paragraph3' }
             ],
@@ -116,13 +119,12 @@ async function initializeDatabase() {
                     text_color: '#FFFFFF'
                 }
             ],
-            contact: [
-                { label: 'email', description: 'contact@example.com' },
-                { label: 'phone', description: '+1234567890' }
+            email: [
+                { address: 'contact@example.com' },
             ],
-            contact_image: [
-                { label: 'phone-image1', image: imageBuffer },
-                { label: 'phone-image2', image: imageBuffer }
+            media: [
+                { label: 'background-image', image: imageBuffer },
+                { label: 'logo', image: imageBuffer }
             ]
         };
 

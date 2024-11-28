@@ -30,14 +30,13 @@ CREATE TABLE IF NOT EXISTS games (
 );
 
 -- Contact table
-CREATE TABLE IF NOT EXISTS contact (
+CREATE TABLE IF NOT EXISTS email (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'email', 'phone', 'address')
-    description TEXT NOT NULL
+    address TEXT NOT NULL              -- Email address
 );
 
--- Contact images table
-CREATE TABLE IF NOT EXISTS contact_image (
+-- Misc images table
+CREATE TABLE IF NOT EXISTS media (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'map', 'building')
     image BLOB NOT NULL                 -- Contact-related image data
@@ -68,4 +67,15 @@ CREATE TABLE IF NOT EXISTS about (
     paragraph_1 TEXT,          -- First text block
     paragraph_2 TEXT,          -- Second text block
     paragraph_3 TEXT          -- Third text block
+);
+
+-- Home table
+CREATE TABLE IF NOT EXISTS home (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort_id INTEGER NOT NULL,          -- Sorting order
+    image BLOB NOT NULL,               -- Hero or section image
+    header TEXT NOT NULL,              -- Section header text
+    paragraph_1 TEXT,                  -- First paragraph of content
+    paragraph_2 TEXT,                  -- Second paragraph of content
+    action TEXT                        -- Call to action text or button label
 );

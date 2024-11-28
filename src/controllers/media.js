@@ -4,7 +4,7 @@ import {
     findByLabel,
     modify,
     destroy
-} from '../models/contact-image.js';
+} from '../models/media.js';
 
 const listAll = async (req, res) => {
     try {
@@ -34,6 +34,15 @@ const getByLabel = async (req, res) => {
             ...item,
             image: item.image.toString('base64')
         });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const item = await findById(id);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -115,6 +124,7 @@ const remove = async (req, res) => {
 export { 
     listAll,
     getByLabel,
+    getById,
     create,
     update,
     remove 
