@@ -32,3 +32,6 @@ Backend service for the Wanted Games web application.
    npm run seed    # Initialize database
    npm run dev     # Start server at http://localhost:3000
    ```
+
+## API Documentation
+API documentation is available via Swagger UI at [http://localhost:3000/api-docs/](http://localhost:3000/api-docs/) when the server is running.

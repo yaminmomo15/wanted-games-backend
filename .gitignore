@@ -136,3 +136,6 @@ database/*.db
 
 # But don't ignore fixtures
 !database/fixtures/**
+
+# Swagger generated files
+api-docs/

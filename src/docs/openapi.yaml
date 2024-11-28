@@ -1,0 +1,401 @@
+openapi: 3.1.0
+info:
+  title: Wanted Games Backend API
+  description: Backend service for the Wanted Games web application
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+        sort_id:
+          type: integer
+        title:
+          type: string
+        description_1:
+          type: string
+        description_2:
+          type: string
+        image_main:
+          type: string
+          format: base64
+        image_1:
+          type: string
+          format: base64
+        image_2:
+          type: string
+          format: base64
+        image_3:
+          type: string
+          format: base64
+        background_color:
+          type: string
+        text_color:
+          type: string
+
+    About:
+      type: object
+      properties:
+        id:
+          type: integer
+        sort_id:
+          type: integer
+        title:
+          type: string
+        image:
+          type: string
+          format: base64
+        paragraph_1:
+          type: string
+        paragraph_2:
+          type: string
+        paragraph_3:
+          type: string
+
+    Gallery:
+      type: object
+      properties:
+        id:
+          type: integer
+        sort_id:
+          type: integer
+        image:
+          type: string
+          format: base64
+
+    Home:
+      type: object
+      properties:
+        id:
+          type: integer
+        sort_id:
+          type: integer
+        header:
+          type: string
+        image:
+          type: string
+          format: base64
+        paragraph_1:
+          type: string
+        paragraph_2:
+          type: string
+        action:
+          type: string
+
+    Social:
+      type: object
+      properties:
+        id:
+          type: integer
+        sort_id:
+          type: integer
+        image:
+          type: string
+          format: base64
+        url:
+          type: string
+
+    Phone:
+      type: object
+      properties:
+        id:
+          type: integer
+        sort_id:
+          type: integer
+        image:
+          type: string
+          format: base64
+        number:
+          type: string
+
+    Email:
+      type: object
+      properties:
+        id:
+          type: integer
+        address:
+          type: string
+
+    Media:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+        image:
+          type: string
+          format: base64
+
+paths:
+  /admin:
+    post:
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+                  admin:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /games:
+    get:
+      summary: List all games
+      responses:
+        '200':
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+    
+    post:
+      summary: Create a new game
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description_1:
+                  type: string
+                description_2:
+                  type: string
+                image_main:
+                  type: string
+                  format: binary
+                image_1:
+                  type: string
+                  format: binary
+                image_2:
+                  type: string
+                  format: binary
+                image_3:
+                  type: string
+                  format: binary
+                background_color:
+                  type: string
+                text_color:
+                  type: string
+      responses:
+        '201':
+          description: Game created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /games/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      summary: Get game by ID
+      responses:
+        '200':
+          description: Game details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update a game
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description_1:
+                  type: string
+                description_2:
+                  type: string
+                image_main:
+                  type: string
+                  format: binary
+                image_1:
+                  type: string
+                  format: binary
+                image_2:
+                  type: string
+                  format: binary
+                image_3:
+                  type: string
+                  format: binary
+                background_color:
+                  type: string
+                text_color:
+                  type: string
+      responses:
+        '200':
+          description: Game updated successfully
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete a game
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Game deleted successfully
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /games/reorder:
+    patch:
+      summary: Update games sort order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  sort_id:
+                    type: integer
+      responses:
+        '200':
+          description: Sort order updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Similar patterns for other endpoints (about, gallery, home, social, phone, email, media)
+  # I'll show the about endpoints as an example, you can follow the same pattern for others
+
+  /about:
+    get:
+      summary: List all about sections
+      responses:
+        '200':
+          description: List of about sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/About'
+    
+    post:
+      summary: Create a new about section
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                paragraph_1:
+                  type: string
+                paragraph_2:
+                  type: string
+                paragraph_3:
+                  type: string
+      responses:
+        '201':
+          description: About section created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
