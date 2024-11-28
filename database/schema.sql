@@ -57,3 +57,11 @@ CREATE TABLE IF NOT EXISTS social (
     image BLOB NOT NULL,                -- Social media icon
     url TEXT NOT NULL                  -- Social media profile URL
 );
+
+-- Phone numbers table
+CREATE TABLE IF NOT EXISTS phone (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort_id INTEGER NOT NULL,          -- Sorting order
+    image BLOB NOT NULL,               -- Phone icon/image
+    number TEXT NOT NULL               -- Phone number as string
+);

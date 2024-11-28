@@ -59,6 +59,10 @@ async function initializeDatabase() {
                 { sort_id: 1, image: imageBuffer, url: 'https://www.facebook.com' },
                 { sort_id: 2, image: imageBuffer, url: 'https://www.instagram.com' }
             ],
+            phone: [
+                { sort_id: 1, image: imageBuffer, number: '+1234567890' },
+                { sort_id: 2, image: imageBuffer, number: '+1234567890' }
+            ],
             gallery: [
                 { sort_id: 1, image: imageBuffer },
                 { sort_id: 2, image: imageBuffer }

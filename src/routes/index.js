@@ -6,6 +6,8 @@ import gameRoutes from './game.js';
 import contactRoutes from './contact.js';
 import contactImageRoutes from './contact-image.js';
 import socialRoutes from './social.js';
+import phoneRoutes from './phone.js';
+
 const router = express.Router();
 
 // API Routes
@@ -16,5 +18,5 @@ router.use('/games', gameRoutes);
 router.use('/contact', contactRoutes);
 router.use('/contact-image', contactImageRoutes);
 router.use('/social', socialRoutes);
-
+router.use('/phone', phoneRoutes);
 export default router; 
