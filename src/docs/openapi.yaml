@@ -147,8 +147,11 @@ components:
           format: base64
 
 paths:
+  # Authentication endpoints
   /admin:
     post:
+      tags:
+        - Authentication
       summary: Admin login
       requestBody:
         required: true
@@ -187,8 +190,348 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+    get:
+      tags:
+        - Authentication
+      summary: Get admin profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Admin profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Home section endpoints
+  /home:
+    get:
+      tags:
+        - Home Sections
+      summary: List all home sections
+      responses:
+        '200':
+          description: List of home sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Home'
+    
+    post:
+      tags:
+        - Home Sections
+      summary: Create a new home section
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                header:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                paragraph_1:
+                  type: string
+                paragraph_2:
+                  type: string
+                action:
+                  type: string
+      responses:
+        '201':
+          description: Home section created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /home/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - Home Sections
+      summary: Get home section by ID
+      responses:
+        '200':
+          description: Home section details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+        '404':
+          description: Home section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Home Sections
+      summary: Update a home section
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                header:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                paragraph_1:
+                  type: string
+                paragraph_2:
+                  type: string
+                action:
+                  type: string
+      responses:
+        '200':
+          description: Home section updated successfully
+        '404':
+          description: Home section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Home Sections
+      summary: Delete a home section
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Home section deleted successfully
+        '404':
+          description: Home section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /home/reorder:
+    patch:
+      tags:
+        - Home Sections
+      summary: Update home sections sort order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  sort_id:
+                    type: integer
+      responses:
+        '200':
+          description: Sort order updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # About section endpoints
+  /about:
+    get:
+      tags:
+        - About Sections
+      summary: List all about sections
+      responses:
+        '200':
+          description: List of about sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/About'
+    
+    post:
+      tags:
+        - About Sections
+      summary: Create a new about section
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                paragraph_1:
+                  type: string
+                paragraph_2:
+                  type: string
+                paragraph_3:
+                  type: string
+      responses:
+        '201':
+          description: About section created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /about/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - About Sections
+      summary: Get about section by ID
+      responses:
+        '200':
+          description: About section details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/About'
+        '404':
+          description: About section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - About Sections
+      summary: Update an about section
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                paragraph_1:
+                  type: string
+                paragraph_2:
+                  type: string
+                paragraph_3:
+                  type: string
+      responses:
+        '200':
+          description: About section updated successfully
+        '404':
+          description: About section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - About Sections
+      summary: Delete an about section
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: About section deleted successfully
+        '404':
+          description: About section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /about/reorder:
+    patch:
+      tags:
+        - About Sections
+      summary: Update about sections sort order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  sort_id:
+                    type: integer
+      responses:
+        '200':
+          description: Sort order updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Games endpoints
   /games:
     get:
+      tags:
+        - Games
       summary: List all games
       responses:
         '200':
@@ -201,6 +544,8 @@ paths:
                   $ref: '#/components/schemas/Game'
     
     post:
+      tags:
+        - Games
       summary: Create a new game
       security:
         - BearerAuth: []
@@ -252,6 +597,8 @@ paths:
           type: integer
     
     get:
+      tags:
+        - Games
       summary: Get game by ID
       responses:
         '200':
@@ -268,6 +615,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     put:
+      tags:
+        - Games
       summary: Update a game
       security:
         - BearerAuth: []
@@ -311,6 +660,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     delete:
+      tags:
+        - Games
       summary: Delete a game
       security:
         - BearerAuth: []
@@ -326,6 +677,8 @@ paths:
 
   /games/reorder:
     patch:
+      tags:
+        - Games
       summary: Update games sort order
       security:
         - BearerAuth: []
@@ -352,24 +705,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  # Similar patterns for other endpoints (about, gallery, home, social, phone, email, media)
-  # I'll show the about endpoints as an example, you can follow the same pattern for others
-
-  /about:
+  # Gallery endpoints
+  /gallery:
     get:
-      summary: List all about sections
+      tags:
+        - Gallery
+      summary: List all gallery images
       responses:
         '200':
-          description: List of about sections
+          description: List of gallery images
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/About'
+                  $ref: '#/components/schemas/Gallery'
     
     post:
-      summary: Create a new about section
+      tags:
+        - Gallery
+      summary: Create a new gallery image
       security:
         - BearerAuth: []
       requestBody:
@@ -379,23 +734,647 @@ paths:
             schema:
               type: object
               properties:
-                title:
-                  type: string
                 image:
                   type: string
                   format: binary
-                paragraph_1:
-                  type: string
-                paragraph_2:
-                  type: string
-                paragraph_3:
-                  type: string
       responses:
         '201':
-          description: About section created successfully
+          description: Gallery image created successfully
         '400':
           description: Invalid input
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error' 
+                $ref: '#/components/schemas/Error'
+
+  /gallery/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - Gallery
+      summary: Get gallery image by ID
+      responses:
+        '200':
+          description: Gallery image details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gallery'
+        '404':
+          description: Gallery image not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Gallery
+      summary: Update a gallery image
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Gallery image updated successfully
+        '404':
+          description: Gallery image not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Gallery
+      summary: Delete a gallery image
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Gallery image deleted successfully
+        '404':
+          description: Gallery image not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /gallery/reorder:
+    patch:
+      tags:
+        - Gallery
+      summary: Update gallery images sort order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  sort_id:
+                    type: integer
+      responses:
+        '200':
+          description: Sort order updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Media endpoints
+  /media:
+    get:
+      tags:
+        - Media
+      summary: List all media items
+      responses:
+        '200':
+          description: List of media items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
+    
+    post:
+      tags:
+        - Media
+      summary: Create a new media item
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Media item created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /media/search:
+    tags:
+      - Media
+    summary: Search media items by label
+    parameters:
+      - name: label
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Media item found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Media'
+      '404':
+        description: Media item not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+
+  /media/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - Media
+      summary: Get media item by ID
+      responses:
+        '200':
+          description: Media item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Media'
+        '404':
+          description: Media item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Media
+      summary: Update a media item
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Media item updated successfully
+        '404':
+          description: Media item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Media
+      summary: Delete a media item
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Media item deleted successfully
+        '404':
+          description: Media item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Social links endpoints
+  /social:
+    get:
+      tags:
+        - Social Links
+      summary: List all social links
+      responses:
+        '200':
+          description: List of social links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Social'
+    
+    post:
+      tags:
+        - Social Links
+      summary: Create a new social link
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Social link created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /social/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - Social Links
+      summary: Get social link by ID
+      responses:
+        '200':
+          description: Social link details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Social'
+        '404':
+          description: Social link not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Social Links
+      summary: Update a social link
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Social link updated successfully
+        '404':
+          description: Social link not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Social Links
+      summary: Delete a social link
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Social link deleted successfully
+        '404':
+          description: Social link not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /social/reorder:
+    patch:
+      tags:
+        - Social Links
+      summary: Update social links sort order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  sort_id:
+                    type: integer
+      responses:
+        '200':
+          description: Sort order updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Phone numbers endpoints
+  /phone:
+    get:
+      tags:
+        - Phone Numbers
+      summary: List all phone numbers
+      responses:
+        '200':
+          description: List of phone numbers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Phone'
+    
+    post:
+      tags:
+        - Phone Numbers
+      summary: Create a new phone number
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                number:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Phone number created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /phone/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - Phone Numbers
+      summary: Get phone number by ID
+      responses:
+        '200':
+          description: Phone number details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+        '404':
+          description: Phone number not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Phone Numbers
+      summary: Update a phone number
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                number:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Phone number updated successfully
+        '404':
+          description: Phone number not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Phone Numbers
+      summary: Delete a phone number
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Phone number deleted successfully
+        '404':
+          description: Phone number not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /phone/reorder:
+    patch:
+      tags:
+        - Phone Numbers
+      summary: Update phone numbers sort order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  sort_id:
+                    type: integer
+      responses:
+        '200':
+          description: Sort order updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Email addresses endpoints
+  /email:
+    get:
+      tags:
+        - Email Addresses
+      summary: List all email addresses
+      responses:
+        '200':
+          description: List of email addresses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Email'
+    
+    post:
+      tags:
+        - Email Addresses
+      summary: Create a new email address
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+      responses:
+        '201':
+          description: Email address created successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /email/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      tags:
+        - Email Addresses
+      summary: Get email address by ID
+      responses:
+        '200':
+          description: Email address details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        '404':
+          description: Email address not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Email Addresses
+      summary: Update an email address
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+      responses:
+        '200':
+          description: Email address updated successfully
+        '404':
+          description: Email address not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Email Addresses
+      summary: Delete an email address
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Email address deleted successfully
+        '404':
+          description: Email address not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
