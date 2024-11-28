@@ -123,7 +123,7 @@ async function initializeDatabase() {
                 { address: 'contact@example.com' },
             ],
             media: [
-                { label: 'background-image', image: imageBuffer },
+                { label: 'background_image', image: imageBuffer },
                 { label: 'logo', image: imageBuffer }
             ]
         };
