@@ -7,13 +7,6 @@ CREATE TABLE IF NOT EXISTS admins (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- About Us table
-CREATE TABLE IF NOT EXISTS about_us (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'mission', 'history')
-    description TEXT NOT NULL
-);
-
 -- Gallery table
 CREATE TABLE IF NOT EXISTS gallery (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,4 +57,15 @@ CREATE TABLE IF NOT EXISTS phone (
     sort_id INTEGER NOT NULL,          -- Sorting order
     image BLOB NOT NULL,               -- Phone icon/image
     number TEXT NOT NULL               -- Phone number as string
+);
+
+-- About table
+CREATE TABLE IF NOT EXISTS about (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort_id INTEGER NOT NULL,          -- Sorting order
+    title TEXT NOT NULL,               -- Section title
+    image BLOB NOT NULL,               -- Section image
+    paragraph_1 TEXT,          -- First text block
+    paragraph_2 TEXT,          -- Second text block
+    paragraph_3 TEXT          -- Third text block
 );

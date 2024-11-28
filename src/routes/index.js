@@ -19,4 +19,5 @@ router.use('/contact', contactRoutes);
 router.use('/contact-image', contactImageRoutes);
 router.use('/social', socialRoutes);
 router.use('/phone', phoneRoutes);
+
 export default router; 

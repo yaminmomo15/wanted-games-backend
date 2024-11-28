@@ -51,9 +51,8 @@ async function initializeDatabase() {
 
         // Insert sample data
         const sampleData = {
-            about_us: [
-                { label: 'button1', description: 'contact us' },
-                { label: 'button2', description: 'about us' }
+            about: [
+                { sort_id: 1, title: 'about us', image: imageBuffer, paragraph_1: 'paragraph1', paragraph_2: 'paragraph2', paragraph_3: 'paragraph3' }
             ],
             social: [
                 { sort_id: 1, image: imageBuffer, url: 'https://www.facebook.com' },
