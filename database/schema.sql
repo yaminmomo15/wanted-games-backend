@@ -49,3 +49,11 @@ CREATE TABLE IF NOT EXISTS contact_image (
     label TEXT UNIQUE NOT NULL,         -- Unique identifier (e.g., 'map', 'building')
     image BLOB NOT NULL                 -- Contact-related image data
 );
+
+-- Social media links table
+CREATE TABLE IF NOT EXISTS social (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort_id INTEGER NOT NULL,          -- Added sort_id for ordering
+    image BLOB NOT NULL,                -- Social media icon
+    url TEXT NOT NULL                  -- Social media profile URL
+);

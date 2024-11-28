@@ -55,6 +55,10 @@ async function initializeDatabase() {
                 { label: 'button1', description: 'contact us' },
                 { label: 'button2', description: 'about us' }
             ],
+            social: [
+                { sort_id: 1, image: imageBuffer, url: 'https://www.facebook.com' },
+                { sort_id: 2, image: imageBuffer, url: 'https://www.instagram.com' }
+            ],
             gallery: [
                 { sort_id: 1, image: imageBuffer },
                 { sort_id: 2, image: imageBuffer }
