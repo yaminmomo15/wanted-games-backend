@@ -78,6 +78,7 @@ const update = async (req, res) => {
         await modify(id, image);
         res.json({ message: 'Gallery item updated successfully' });
     } catch (error) {
+        console.log('error');
         res.status(500).json({ error: error.message });
     }
 };

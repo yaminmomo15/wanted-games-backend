@@ -19,18 +19,9 @@ const findById = async (id) => {
     return result[0];
 };
 
-const modify = async (id, image, sort_id) => {
-    let sql = 'UPDATE gallery SET image = ?, sort_id = ?';
-    const params = [image, sort_id];
-
-    if (image) {
-        sql += ', image = ?';
-        params.push(image);
-    }
-
-    sql += ' WHERE id = ?';
-    params.push(id);
-
+const modify = async (id, image) => {
+    let sql = 'UPDATE gallery SET image = ? WHERE id = ?';
+    const params = [image, id];
     return await db.runAsync(sql, params);
 };
 
