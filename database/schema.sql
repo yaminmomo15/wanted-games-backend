@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS games (
     description_2 TEXT NOT NULL,       -- Second game description
     background_color TEXT NOT NULL,    -- Background color for the game section
     text_color TEXT NOT NULL,          -- Text color for the game section
+    url TEXT,                  -- URL for the game
     image_main BLOB NOT NULL,          -- Main game image
     image_1 BLOB,                       -- Additional game image 1
     image_2 BLOB,                       -- Additional game image 2

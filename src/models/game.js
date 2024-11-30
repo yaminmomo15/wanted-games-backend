@@ -1,10 +1,10 @@
 import db from '../config/db.js';
 
-const insert = async (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color) => {
+const insert = async (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color, url = null) => {
     await db.runAsync(
-        `INSERT INTO games (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color]
+        `INSERT INTO games (title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color, url)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [title, description_1, description_2, image_main, image_1, image_2, image_3, sort_id, background_color, text_color, url]
     );
     const result = await db.allAsync('SELECT id, sort_id FROM games WHERE id = (SELECT MAX(id) FROM games)');
     return result[0];
@@ -14,9 +14,9 @@ const findAll = async () => {
     return await db.allAsync('SELECT * FROM games ORDER BY sort_id ASC');
 };
 
-const  modify = async (id, title, description_1, description_2, image_main = null, image_1 = null, image_2 = null, image_3 = null, background_color, text_color) => {
-    let sql = 'UPDATE games SET title = ?, description_1 = ?, description_2 = ?, background_color = ?, text_color = ?';
-    const params = [title, description_1, description_2, background_color, text_color];
+const  modify = async (id, title, description_1, description_2, image_main = null, image_1 = null, image_2 = null, image_3 = null, background_color, text_color, url = null) => {
+    let sql = 'UPDATE games SET title = ?, description_1 = ?, description_2 = ?, background_color = ?, text_color = ?, url = ?';
+    const params = [title, description_1, description_2, background_color, text_color, url];
 
     if (image_main) {
         sql += ', image_main = ?';

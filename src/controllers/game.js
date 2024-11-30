@@ -28,7 +28,7 @@ const listAll = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const { title, description_1, description_2, background_color, text_color } = req.body;
+        const { title, description_1, description_2, background_color, text_color, url } = req.body;
         const files = req.files;
 
         // Validation
@@ -58,7 +58,8 @@ const create = async (req, res) => {
             files.image_3?.[0]?.buffer,
             nextSortId,
             background_color,
-            text_color
+            text_color,
+            url
         );
         
         res.status(201).json({
@@ -78,7 +79,7 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description_1, description_2, background_color, text_color } = req.body;
+        const { title, description_1, description_2, background_color, text_color, url } = req.body;
         const files = req.files;
   
         // Validation
@@ -105,7 +106,8 @@ const update = async (req, res) => {
             files?.image_2?.[0]?.buffer,
             files?.image_3?.[0]?.buffer,
             background_color,
-            text_color
+            text_color,
+            url
         );
 
         res.json({

@@ -80,7 +80,8 @@ async function initializeDatabase() {
                     image_2: imageBuffer,
                     image_3: imageBuffer,
                     background_color: '#000000',
-                    text_color: '#FFFFFF'
+                    text_color: '#FFFFFF',
+                    url: 'https://www.google.com'
                 },
                 {
                     sort_id: 2,
@@ -92,7 +93,8 @@ async function initializeDatabase() {
                     image_2: imageBuffer,
                     image_3: imageBuffer,
                     background_color: '#000000',
-                    text_color: '#FFFFFF'
+                    text_color: '#FFFFFF',
+                    url: 'https://www.google.com'
                 },
                 {
                     sort_id: 3,
@@ -104,7 +106,8 @@ async function initializeDatabase() {
                     image_2: imageBuffer,
                     image_3: imageBuffer,
                     background_color: '#000000',
-                    text_color: '#FFFFFF'
+                    text_color: '#FFFFFF',
+                    url: 'https://www.google.com'
                 },
                 {
                     sort_id: 4,
@@ -116,7 +119,8 @@ async function initializeDatabase() {
                     image_2: imageBuffer,
                     image_3: imageBuffer,
                     background_color: '#000000',
-                    text_color: '#FFFFFF'
+                    text_color: '#FFFFFF',
+                    url: 'https://www.google.com'
                 }
             ],
             email: [
