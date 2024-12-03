@@ -1,9 +1,11 @@
 import db from '../config/db.js';
+import { uploadToS3, deleteFromS3 } from '../utils/s3.js';
 
-const insert = async (sortId, image) => {
+const insert = async (sortId, imageFile) => {
+    const imageUrl = await uploadToS3(imageFile, 'gallery');
     return await db.runAsync(
-        'INSERT INTO gallery (sort_id, image) VALUES (?, ?)',
-        [sortId, image]
+        'INSERT INTO gallery (sort_id, image_url) VALUES (?, ?)',
+        [sortId, imageUrl]
     );
 };
 
@@ -19,10 +21,18 @@ const findById = async (id) => {
     return result[0];
 };
 
-const modify = async (id, image) => {
-    let sql = 'UPDATE gallery SET image = ? WHERE id = ?';
-    const params = [image, id];
-    return await db.runAsync(sql, params);
+const modify = async (id, imageFile) => {
+    // Get the existing record to delete old image
+    const existing = await findById(id);
+    if (existing) {
+        await deleteFromS3(existing.image_url);
+    }
+
+    const imageUrl = await uploadToS3(imageFile, 'gallery');
+    return await db.runAsync(
+        'UPDATE gallery SET image_url = ? WHERE id = ?',
+        [imageUrl, id]
+    );
 };
 
 const findLargestSortId = async () => {
@@ -47,6 +57,12 @@ const updateSortOrder = async (updates) => {
 };
 
 const destroy = async (id) => {
+    // Get the existing record to delete image
+    const existing = await findById(id);
+    if (existing) {
+        await deleteFromS3(existing.image_url);
+    }
+    
     return await db.runAsync('DELETE FROM gallery WHERE id = ?', [id]);
 };
 

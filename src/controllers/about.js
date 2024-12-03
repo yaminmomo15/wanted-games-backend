@@ -10,12 +10,25 @@ import {
 
 const listAll = async (req, res) => {
     try {
-        const aboutSections = await findAll();
-        const processedSections = aboutSections.map(section => ({
-            ...section,
-            image: section.image.toString('base64')
-        }));
-        res.json(processedSections);
+        const sections = await findAll();
+        res.json(sections);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const section = await findById(id);
+        
+        if (!section) {
+            return res.status(404).json({
+                error: 'About section not found'
+            });
+        }
+        
+        res.json(section);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -24,7 +37,7 @@ const listAll = async (req, res) => {
 const create = async (req, res) => {
     try {
         const { title, paragraph_1, paragraph_2, paragraph_3 } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
 
         // Validation
         if (!title || !paragraph_1 || !paragraph_2 || !paragraph_3) {
@@ -33,7 +46,7 @@ const create = async (req, res) => {
             });
         }
 
-        if (!files?.image) {
+        if (!imageFile) {
             return res.status(400).json({
                 error: 'Image is required'
             });
@@ -46,15 +59,16 @@ const create = async (req, res) => {
         const result = await insert(
             nextSortId,
             title,
-            files.image[0].buffer,
+            imageFile,
             paragraph_1,
             paragraph_2,
             paragraph_3
         );
-        
+
         res.status(201).json({
-            sort_id: result.sort_id,
-            id: result.id
+            message: 'About section created successfully',
+            id: result.id,
+            sort_id: result.sort_id
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -65,8 +79,8 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, paragraph_1, paragraph_2, paragraph_3 } = req.body;
-        const files = req.files;
-  
+        const imageFile = req.files?.image?.[0];
+
         // Validation
         if (!title || !paragraph_1 || !paragraph_2 || !paragraph_3) {
             return res.status(400).json({
@@ -85,7 +99,7 @@ const update = async (req, res) => {
             about.id,
             about.sort_id,
             title,
-            files?.image?.[0]?.buffer,
+            imageFile,
             paragraph_1,
             paragraph_2,
             paragraph_3
@@ -113,26 +127,6 @@ const remove = async (req, res) => {
         await destroy(id);
         res.json({
             message: 'About section deleted successfully'
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-const getById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const about = await findById(id);
-
-        if (!about) {
-            return res.status(404).json({
-                error: 'About section not found'
-            });
-        }
-
-        res.json({
-            ...about,
-            image: about.image.toString('base64')
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

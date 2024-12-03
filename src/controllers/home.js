@@ -11,11 +11,24 @@ import {
 const listAll = async (req, res) => {
     try {
         const sections = await findAll();
-        const processedSections = sections.map(section => ({
-            ...section,
-            image: section.image.toString('base64')
-        }));
-        res.json(processedSections);
+        res.json(sections);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const section = await findById(id);
+        
+        if (!section) {
+            return res.status(404).json({
+                error: 'Home section not found'
+            });
+        }
+        
+        res.json(section);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -24,16 +37,15 @@ const listAll = async (req, res) => {
 const create = async (req, res) => {
     try {
         const { header, paragraph_1, paragraph_2, action } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
 
-        // Validation
         if (!header) {
             return res.status(400).json({
                 error: 'Header is required'
             });
         }
 
-        if (!files?.image) {
+        if (!imageFile) {
             return res.status(400).json({
                 error: 'Image is required'
             });
@@ -48,13 +60,14 @@ const create = async (req, res) => {
             paragraph_1,
             paragraph_2,
             action,
-            files.image[0].buffer,
+            imageFile,
             nextSortId
         );
-        
+
         res.status(201).json({
-            sort_id: result.sort_id,
-            id: result.id
+            message: 'Home section created successfully',
+            id: result.id,
+            sort_id: result.sort_id
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -65,9 +78,8 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const { header, paragraph_1, paragraph_2, action } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
 
-        // Validation
         if (!header) {
             return res.status(400).json({
                 error: 'Header is required'
@@ -77,7 +89,7 @@ const update = async (req, res) => {
         const section = await findById(id);
         if (!section) {
             return res.status(404).json({
-                error: 'Section not found'
+                error: 'Home section not found'
             });
         }
 
@@ -87,11 +99,11 @@ const update = async (req, res) => {
             paragraph_1,
             paragraph_2,
             action,
-            files?.image?.[0]?.buffer
+            imageFile
         );
 
         res.json({
-            message: 'Section updated successfully'
+            message: 'Home section updated successfully'
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,26 +124,6 @@ const remove = async (req, res) => {
         await destroy(id);
         res.json({
             message: 'Section deleted successfully'
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-const getById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const section = await findById(id);
-
-        if (!section) {
-            return res.status(404).json({
-                error: 'Section not found'
-            });
-        }
-
-        res.json({
-            ...section,
-            image: section.image.toString('base64')
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

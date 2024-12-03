@@ -1,10 +1,12 @@
 import db from '../config/db.js';
+import { uploadToS3, deleteFromS3 } from '../utils/s3.js';
 
-const insert = async (sort_id, title, image, paragraph_1, paragraph_2, paragraph_3) => {
+const insert = async (sort_id, title, imageFile, paragraph_1, paragraph_2, paragraph_3) => {
+    const imageUrl = await uploadToS3(imageFile, 'about');
     await db.runAsync(
-        `INSERT INTO about (title, image, paragraph_1, paragraph_2, paragraph_3, sort_id)
+        `INSERT INTO about (title, image_url, paragraph_1, paragraph_2, paragraph_3, sort_id)
          VALUES (?, ?, ?, ?, ?, ?)`,
-        [title, image, paragraph_1, paragraph_2, paragraph_3, sort_id]
+        [title, imageUrl, paragraph_1, paragraph_2, paragraph_3, sort_id]
     );
     const result = await db.allAsync('SELECT id, sort_id FROM about WHERE id = (SELECT MAX(id) FROM about)');
     return result[0];
@@ -14,13 +16,19 @@ const findAll = async () => {
     return await db.allAsync('SELECT * FROM about ORDER BY sort_id ASC');
 };
 
-const modify = async (id, sort_id, title, image = null, paragraph_1, paragraph_2, paragraph_3) => {
+const modify = async (id, sort_id, title, imageFile = null, paragraph_1, paragraph_2, paragraph_3) => {
     let sql = 'UPDATE about SET title = ?, paragraph_1 = ?, paragraph_2 = ?, paragraph_3 = ?, sort_id = ?';
     const params = [title, paragraph_1, paragraph_2, paragraph_3, sort_id];
 
-    if (image) {
-        sql += ', image = ?';
-        params.push(image);
+    if (imageFile) {
+        // Get existing record to delete old image
+        const existing = await findById(id);
+        if (existing) {
+            await deleteFromS3(existing.image_url);
+        }
+        const imageUrl = await uploadToS3(imageFile, 'about');
+        sql += ', image_url = ?';
+        params.push(imageUrl);
     }
 
     sql += ' WHERE id = ?';
@@ -30,6 +38,10 @@ const modify = async (id, sort_id, title, image = null, paragraph_1, paragraph_2
 };
 
 const destroy = async (id) => {
+    const existing = await findById(id);
+    if (existing) {
+        await deleteFromS3(existing.image_url);
+    }
     return await db.runAsync('DELETE FROM about WHERE id = ?', [id]);
 };
 

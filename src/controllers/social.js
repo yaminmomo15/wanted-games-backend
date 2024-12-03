@@ -10,12 +10,25 @@ import {
 
 const listAll = async (req, res) => {
     try {
-        const socialLinks = await findAll();
-        const processedLinks = socialLinks.map(link => ({
-            ...link,
-            image: link.image.toString('base64')
-        }));
-        res.json(processedLinks);
+        const items = await findAll();
+        res.json(items);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const social = await findById(id);
+        
+        if (!social) {
+            return res.status(404).json({
+                error: 'Social media link not found'
+            });
+        }
+        
+        res.json(social);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -24,16 +37,15 @@ const listAll = async (req, res) => {
 const create = async (req, res) => {
     try {
         const { url } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
 
-        // Validation
         if (!url) {
             return res.status(400).json({
                 error: 'URL is required'
             });
         }
 
-        if (!files?.image) {
+        if (!imageFile) {
             return res.status(400).json({
                 error: 'Image is required'
             });
@@ -43,22 +55,14 @@ const create = async (req, res) => {
         const largestSortId = await findLargestSortId() || 0;
         const nextSortId = largestSortId + 1;
 
-        const result = await insert(
-            files.image[0].buffer,
-            url,
-            nextSortId
-        );
-        
+        const result = await insert(imageFile, url, nextSortId);
+
         res.status(201).json({
-            sort_id: result.sort_id,
-            id: result.id
+            message: 'Social media link created successfully',
+            id: result.id,
+            sort_id: result.sort_id
         });
     } catch (error) {
-        if (error.message.includes('UNIQUE constraint failed')) {
-            return res.status(400).json({
-                error: error.message
-            });
-        }
         res.status(500).json({ error: error.message });
     }
 };
@@ -67,9 +71,8 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const { url } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
   
-        // Validation
         if (!url) {
             return res.status(400).json({
                 error: 'URL is required'
@@ -85,7 +88,7 @@ const update = async (req, res) => {
 
         await modify(
             social.id,
-            files?.image?.[0]?.buffer,
+            imageFile,
             url,
             social.sort_id
         );
@@ -112,26 +115,6 @@ const remove = async (req, res) => {
         await destroy(id);
         res.json({
             message: 'Social media link deleted successfully'
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-const getById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const social = await findById(id);
-
-        if (!social) {
-            return res.status(404).json({
-                error: 'Social media link not found'
-            });
-        }
-
-        res.json({
-            ...social,
-            image: social.image.toString('base64')
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

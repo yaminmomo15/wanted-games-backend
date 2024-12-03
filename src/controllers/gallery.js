@@ -11,11 +11,7 @@ import {
 const listAll = async (req, res) => {
     try {
         const items = await findAll();
-        const processedItems = items.map(item => ({
-            ...item,
-            image: item.image.toString('base64')
-        }));
-        res.json(processedItems);
+        res.json(items);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -30,10 +26,7 @@ const getById = async (req, res) => {
             return res.status(404).json({ error: 'Gallery item not found' });
         }
         
-        res.json({
-            ...item,
-            image: item.image.toString('base64')
-        });
+        res.json(item);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -41,9 +34,9 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const image = req.file?.buffer;
+        const imageFile = req.file;
         
-        if (!image) {
+        if (!imageFile) {
             return res.status(400).json({ error: 'Image is required' });
         }
 
@@ -51,12 +44,13 @@ const create = async (req, res) => {
         const largestSortId = await findLargestSortId() || 0;
         const nextSortId = largestSortId + 1;
 
-        await insert(nextSortId, image);
-        res.status(201).json({ message: 'Gallery item created successfully' });
+        const result = await insert(nextSortId, imageFile);
+        res.status(201).json({ 
+            message: 'Gallery item created successfully',
+            id: result.id,
+            sort_id: result.sort_id
+        });
     } catch (error) {
-        if (error.message.includes('UNIQUE constraint failed')) {
-            return res.status(400).json({ error: 'Label must be unique' });
-        }
         res.status(500).json({ error: error.message });
     }
 };
@@ -64,9 +58,9 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { id } = req.params;
-        const image = req.file?.buffer;
+        const imageFile = req.file;
         
-        if (!image) {
+        if (!imageFile) {
             return res.status(400).json({ error: 'Image is required' });
         }
 
@@ -75,10 +69,9 @@ const update = async (req, res) => {
             return res.status(404).json({ error: 'Gallery item not found' });
         }
 
-        await modify(id, image);
+        await modify(id, imageFile);
         res.json({ message: 'Gallery item updated successfully' });
     } catch (error) {
-        console.log('error');
         res.status(500).json({ error: error.message });
     }
 };

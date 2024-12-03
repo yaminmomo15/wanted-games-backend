@@ -1,10 +1,12 @@
 import db from '../config/db.js';
+import { uploadToS3, deleteFromS3 } from '../utils/s3.js';
 
-const insert = async (header, paragraph_1, paragraph_2, action, image, sort_id) => {
+const insert = async (header, paragraph_1, paragraph_2, action, imageFile, sort_id) => {
+    const imageUrl = await uploadToS3(imageFile, 'home');
     await db.runAsync(
-        `INSERT INTO home (header, paragraph_1, paragraph_2, action, image, sort_id)
+        `INSERT INTO home (header, paragraph_1, paragraph_2, action, image_url, sort_id)
          VALUES (?, ?, ?, ?, ?, ?)`,
-        [header, paragraph_1, paragraph_2, action, image, sort_id]
+        [header, paragraph_1, paragraph_2, action, imageUrl, sort_id]
     );
     const result = await db.allAsync('SELECT id, sort_id FROM home WHERE id = (SELECT MAX(id) FROM home)');
     return result[0];
@@ -14,13 +16,19 @@ const findAll = async () => {
     return await db.allAsync('SELECT * FROM home ORDER BY sort_id ASC');
 };
 
-const modify = async (id, header, paragraph_1, paragraph_2, action, image = null) => {
+const modify = async (id, header, paragraph_1, paragraph_2, action, imageFile = null) => {
     let sql = 'UPDATE home SET header = ?, paragraph_1 = ?, paragraph_2 = ?, action = ?';
     const params = [header, paragraph_1, paragraph_2, action];
 
-    if (image) {
-        sql += ', image = ?';
-        params.push(image);
+    if (imageFile) {
+        // Get existing record to delete old image
+        const existing = await findById(id);
+        if (existing) {
+            await deleteFromS3(existing.image_url);
+        }
+        const imageUrl = await uploadToS3(imageFile, 'home');
+        sql += ', image_url = ?';
+        params.push(imageUrl);
     }
 
     sql += ' WHERE id = ?';
@@ -30,6 +38,10 @@ const modify = async (id, header, paragraph_1, paragraph_2, action, image = null
 };
 
 const destroy = async (id) => {
+    const existing = await findById(id);
+    if (existing) {
+        await deleteFromS3(existing.image_url);
+    }
     return await db.runAsync('DELETE FROM home WHERE id = ?', [id]);
 };
 

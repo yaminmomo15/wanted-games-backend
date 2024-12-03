@@ -11,24 +11,23 @@ import {
 const listAll = async (req, res) => {
     try {
         const games = await findAll();
-        const processedGames = games.map(game => ({
-            ...game,
-            image_main: game.image_main.toString('base64'),
-            image_1: game.image_1?.toString('base64'),
-            image_2: game.image_2?.toString('base64'),
-            image_3: game.image_3?.toString('base64')
-        }));
-        res.json(processedGames);
+        console.log('games', games);
+        res.json(games);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-
-
 const create = async (req, res) => {
     try {
-        const { title, description_1, description_2, background_color, text_color, url } = req.body;
+        const { 
+            title, 
+            description_1, 
+            description_2, 
+            background_color, 
+            text_color,
+            url 
+        } = req.body;
         const files = req.files;
 
         // Validation
@@ -52,26 +51,22 @@ const create = async (req, res) => {
             title,
             description_1,
             description_2,
-            files.image_main[0].buffer,
-            files.image_1?.[0]?.buffer,
-            files.image_2?.[0]?.buffer,
-            files.image_3?.[0]?.buffer,
+            files.image_main[0],
+            files?.image_1?.[0],
+            files?.image_2?.[0],
+            files?.image_3?.[0],
             nextSortId,
             background_color,
             text_color,
             url
         );
-        
+
         res.status(201).json({
-            sort_id: result.sort_id,
-            id: result.id
+            message: 'Game created successfully',
+            id: result.id,
+            sort_id: result.sort_id
         });
     } catch (error) {
-        if (error.message.includes('UNIQUE constraint failed')) {
-            return res.status(400).json({
-                error: error.message
-            });
-        }
         res.status(500).json({ error: error.message });
     }
 };
@@ -79,9 +74,16 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description_1, description_2, background_color, text_color, url } = req.body;
+        const { 
+            title, 
+            description_1, 
+            description_2, 
+            background_color, 
+            text_color,
+            url 
+        } = req.body;
         const files = req.files;
-  
+
         // Validation
         if (!title || !description_1 || !description_2 || !background_color || !text_color) {
             return res.status(400).json({
@@ -97,14 +99,14 @@ const update = async (req, res) => {
         }
 
         await modify(
-            game.id,
+            id,
             title,
             description_1,
             description_2,
-            files?.image_main?.[0]?.buffer,
-            files?.image_1?.[0]?.buffer,
-            files?.image_2?.[0]?.buffer,
-            files?.image_3?.[0]?.buffer,
+            files?.image_main?.[0],
+            files?.image_1?.[0],
+            files?.image_2?.[0],
+            files?.image_3?.[0],
             background_color,
             text_color,
             url
@@ -149,13 +151,7 @@ const getById = async (req, res) => {
             });
         }
 
-        res.json({
-            ...game,
-            image_main: game.image_main.toString('base64'),
-            image_1: game.image_1?.toString('base64'),
-            image_2: game.image_2?.toString('base64'),
-            image_3: game.image_3?.toString('base64')
-        });
+        res.json(game);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

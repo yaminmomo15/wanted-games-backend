@@ -10,12 +10,25 @@ import {
 
 const listAll = async (req, res) => {
     try {
-        const phoneNumbers = await findAll();
-        const processedNumbers = phoneNumbers.map(phone => ({
-            ...phone,
-            image: phone.image.toString('base64')
-        }));
-        res.json(processedNumbers);
+        const items = await findAll();
+        res.json(items);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const phone = await findById(id);
+        
+        if (!phone) {
+            return res.status(404).json({
+                error: 'Phone number not found'
+            });
+        }
+        
+        res.json(phone);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -24,16 +37,15 @@ const listAll = async (req, res) => {
 const create = async (req, res) => {
     try {
         const { number } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
 
-        // Validation
         if (!number) {
             return res.status(400).json({
                 error: 'Phone number is required'
             });
         }
 
-        if (!files?.image) {
+        if (!imageFile) {
             return res.status(400).json({
                 error: 'Image is required'
             });
@@ -43,22 +55,14 @@ const create = async (req, res) => {
         const largestSortId = await findLargestSortId() || 0;
         const nextSortId = largestSortId + 1;
 
-        const result = await insert(
-            files.image[0].buffer,
-            number,
-            nextSortId
-        );
-        
+        const result = await insert(imageFile, number, nextSortId);
+
         res.status(201).json({
-            sort_id: result.sort_id,
-            id: result.id
+            message: 'Phone number created successfully',
+            id: result.id,
+            sort_id: result.sort_id
         });
     } catch (error) {
-        if (error.message.includes('UNIQUE constraint failed')) {
-            return res.status(400).json({
-                error: error.message
-            });
-        }
         res.status(500).json({ error: error.message });
     }
 };
@@ -67,9 +71,8 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const { number } = req.body;
-        const files = req.files;
+        const imageFile = req.files?.image?.[0];
   
-        // Validation
         if (!number) {
             return res.status(400).json({
                 error: 'Phone number is required'
@@ -85,7 +88,7 @@ const update = async (req, res) => {
 
         await modify(
             phone.id,
-            files?.image?.[0]?.buffer,
+            imageFile,
             number,
             phone.sort_id
         );
@@ -112,26 +115,6 @@ const remove = async (req, res) => {
         await destroy(id);
         res.json({
             message: 'Phone number deleted successfully'
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-const getById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const phone = await findById(id);
-
-        if (!phone) {
-            return res.status(404).json({
-                error: 'Phone number not found'
-            });
-        }
-
-        res.json({
-            ...phone,
-            image: phone.image.toString('base64')
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
