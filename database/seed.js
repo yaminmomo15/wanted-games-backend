@@ -11,8 +11,11 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'website.db');
+const dbPath = process.env.DB_PATH || path.join(__dirname, process.env.DB_NAME);
 const schemaPath = path.join(__dirname, 'schema.sql');
+const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
+const adminUsername = process.env.ADMIN_USERNAME;
+const adminPassword = process.env.ADMIN_PASSWORD;
 
 async function initializeDatabase() {
     const db = new sqlite3.Database(dbPath, async (err) => {
@@ -39,10 +42,10 @@ async function initializeDatabase() {
         }
 
         // Create default admin account
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const hashedPassword = await bcrypt.hash(adminPassword, saltRounds);
         await runAsync(
             'INSERT OR IGNORE INTO admins (username, password) VALUES (?, ?)',
-            ['admin', hashedPassword]
+            [adminUsername, hashedPassword]
         );
 
         // Sample image for testing
@@ -148,8 +151,8 @@ async function initializeDatabase() {
 
         console.log('Database seeded successfully!');
         console.log('Default admin credentials:');
-        console.log('Username: admin');
-        console.log('Password: admin123');
+        console.log(`Username: ${adminUsername}`);
+        console.log(`Password: ${adminPassword}`);
 
     } catch (error) {
         console.error('Error seeding database:', error);
