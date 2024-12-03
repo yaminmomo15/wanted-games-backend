@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Set database path from environment variable or use default path
-const dbPath = process.env.DB_PATH || path.join(__dirname, '../../database/website.db');
+const dbPath = process.env.DB_PATH || path.join(__dirname, '../../database/database.db');
 
 // Initialize database connection
 const db = new sqlite3.Database(dbPath, (err) => {
