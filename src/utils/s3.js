@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from '@aws-sdk/client-s3';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
+import mime from 'mime';
 dotenv.config();
 
 const s3Client = new S3Client({
@@ -12,15 +13,14 @@ const s3Client = new S3Client({
     }
 });
 
-const generateFileName = (originalName) => {
+const generateFileName = (extension) => {
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(8).toString('hex');
-    const extension = originalName.split('.').pop();
     return `${timestamp}-${randomString}.${extension}`;
 };
 
 export const uploadToS3 = async (file, folder = '') => {
-    const fileName = generateFileName(file.originalname);
+    const fileName = generateFileName(mime.extension(file.mimetype));
     const key = folder ? `${folder}/${fileName}` : fileName;
     const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
