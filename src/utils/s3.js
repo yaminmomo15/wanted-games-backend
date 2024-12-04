@@ -34,7 +34,7 @@ export const uploadToS3 = async (file, folder = '') => {
 };
 
 export const deleteFromS3 = async (url) => {
-    const key = url.split('.com/')[1];
+    const key = new URL(url).pathname.substring(1);
     const command = new DeleteObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: key,
