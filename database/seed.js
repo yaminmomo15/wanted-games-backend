@@ -2,7 +2,7 @@ import path from 'path';
 import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { sampleData } from './sample-data.js';
+import { sampleData } from './seed-data.js';
 import { uploadToS3, emptyS3Bucket } from '../src/utils/s3.js';
 import fs from 'fs';
 import * as gameModel from '../src/models/game.js';

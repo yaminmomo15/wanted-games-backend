@@ -133,9 +133,8 @@ dist
 
 # Ignore database files
 database/*.db
-
-# But don't ignore fixtures
-!database/fixtures/**
+database/fixtures/**
+database/seed-data.js
 
 # Swagger generated files
 api-docs/
