@@ -5,6 +5,13 @@ const create = async (req, res) => {
     try {
         const { username, password } = req.body;
         
+        // check if username is a valid string, number, dash, or underscore using regex
+        if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+            return res.status(400).json({ 
+                error: 'Invalid username' 
+            });
+        }
+
         // Validate request body
         if (!username || !password) {
             return res.status(400).json({ 
