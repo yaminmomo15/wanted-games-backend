@@ -11,7 +11,6 @@ import {
 const listAll = async (req, res) => {
     try {
         const games = await findAll();
-        console.log('games', games);
         res.json(games);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -83,7 +82,7 @@ const update = async (req, res) => {
             url 
         } = req.body;
         const files = req.files;
-
+        
         // Validation
         if (!title || !description_1 || !description_2 || !background_color || !text_color) {
             return res.status(400).json({

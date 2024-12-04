@@ -58,11 +58,6 @@ async function initializeDatabase() {
         await seedAdminUser();
         await seedSampleData();
 
-        console.log('Database seeded successfully!');
-        console.log('Default admin credentials:');
-        console.log(`Username: ${adminUsername}`);
-        console.log(`Password: ${adminPassword}`);
-
     } catch (error) {
         console.error('Error seeding database:', error);
     } finally {
